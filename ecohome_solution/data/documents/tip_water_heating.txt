@@ -1,0 +1,29 @@
+# Water Heating Efficiency
+
+Water heating is often the second or third largest energy use in a home, typically around 15-20% of household energy.
+
+## Temperature and settings
+- Set the water heater to 120°F (49°C). Many are shipped at 140°F; each 10°F reduction saves roughly 3-5% of water heating energy and reduces scald risk.
+- Use vacation mode when away for more than a couple of days.
+
+## Heat pump water heaters
+- Heat pump water heaters move heat from surrounding air into the water and can be two to three times more efficient than conventional electric resistance water heaters.
+- An ENERGY STAR heat pump water heater can save a typical family hundreds of dollars a year compared with a standard electric model.
+- They cool and dehumidify the space they sit in (useful in a hot garage in summer).
+- Use "heat pump only" or "efficiency" mode; "high demand" or "electric" mode uses resistance elements and costs far more.
+
+## Timing with time-of-use rates and solar
+- A tank of hot water is a thermal battery. Heat it midday on solar or overnight off-peak and coast through the 16:00-21:00 peak.
+- Smart water heaters and timers can boost the tank temperature (for example to 130-140°F with a mixing valve for safety) during solar hours, then block heating during the peak.
+- A thermostatic mixing valve delivers safe 120°F water at the tap while the tank stores hotter water.
+
+## Reducing hot water use
+- WaterSense showerheads use no more than 2.0 gallons per minute versus the 2.5 gpm federal maximum, cutting hot water use without noticeably weaker showers.
+- Fix dripping hot water taps; one drip per second wastes over 3,000 gallons a year.
+- About 90% of the energy a washing machine uses goes to heating water; wash in cold water.
+- Run the dishwasher only when full; it uses less hot water than hand washing.
+
+## Maintenance
+- Drain a few gallons from the tank annually to remove sediment, which insulates the water from the heating element and lowers efficiency.
+- Insulate the first 6 feet of hot and cold pipes from the heater.
+- Check the anode rod every few years to extend tank life.

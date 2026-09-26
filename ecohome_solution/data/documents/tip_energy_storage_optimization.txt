@@ -1,0 +1,38 @@
+# Home Battery and Energy Storage Optimization
+
+A home battery shifts energy in time: it charges when electricity is cheap or solar is abundant and discharges when electricity is expensive. It also provides backup power during outages.
+
+## Key specifications
+- Usable capacity (kWh): how much energy it stores. A Tesla Powerwall 2, for example, stores 13.5 kWh usable.
+- Continuous power (kW): how much it can deliver at once (about 5 kW for a Powerwall 2). Power limits which loads it can run simultaneously; an EV charger plus air conditioner can exceed it.
+- Round-trip efficiency: lithium-ion home batteries typically return about 85-90% of the energy stored.
+- Chemistry: lithium iron phosphate (LFP) batteries tolerate more cycles (often several thousand) than nickel-based chemistries.
+
+## Operating modes
+- Self-powered / self-consumption: store surplus solar during the day and use it in the evening. Best when exports earn little (for example under NEM 3.0).
+- Time-based control / TOU arbitrage: charge from solar (or from the grid off-peak if allowed) and discharge during the on-peak window, typically 16:00-21:00.
+- Backup reserve: keep a reserve (for example 20-30%) for outages; raise it before storms, wildfire-season power shutoffs or forecast grid emergencies.
+
+## Daily strategy for a solar home on time-of-use rates
+1. Morning: the battery serves the small overnight and morning load or holds charge.
+2. 10:00-15:00: solar charges the battery to full while also running flexible loads.
+3. 16:00-21:00 (peak): the battery covers household load so the home imports little or nothing at peak prices.
+4. After 22:00: remaining load comes from cheap off-peak grid power; EV charging happens here.
+
+## When does grid charging make sense?
+- Only if the price difference between off-peak and peak exceeds the round-trip loss: with 90% efficiency, charging at $0.22 and discharging to avoid $0.53 saves about $0.53 - 0.22/0.9 = $0.29 per kWh.
+- Check your interconnection and incentive rules; some programs restrict grid charging for batteries that received solar incentives.
+
+## Estimating savings
+- Daily arbitrage value ≈ usable kWh shifted x (peak rate - export value / round-trip efficiency).
+- Example: shifting 12 kWh a day of solar that would have been exported at $0.05 into the peak at $0.53 is worth about 12 x (0.53 - 0.05/0.9) ≈ $5.70 per weekday. Weekend evenings are billed at mid-peak, so annual value is somewhat lower than 365 x the weekday figure.
+- Payback period = installed cost after incentives / annual savings. Check current federal, state and utility incentives, which change frequently.
+
+## Battery health tips
+- Avoid keeping the battery at 100% for long periods unless a storm or outage is expected.
+- Keep it in a shaded, ventilated location; heat accelerates aging.
+- Update firmware; manufacturers improve the charging logic.
+
+## EVs as storage
+- An EV battery (60-100 kWh) is several times larger than a home battery. Vehicle-to-home (V2H) capable cars and chargers can back up a house for days.
+- Even without V2H, scheduling EV charging into solar or off-peak hours is effectively "storage" because the car absorbs cheap energy for later driving.

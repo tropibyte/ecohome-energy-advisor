@@ -1,0 +1,42 @@
+# HVAC Optimization Strategies
+
+Heating and cooling are usually the largest share of a home's energy bill, often around 40-50% of household energy use. A heat pump or air conditioner draws 2-4 kW while running, so how and when it runs matters more than almost any other device.
+
+## Thermostat setpoints that balance comfort and cost
+- Summer: 78°F (26°C) when home is the widely recommended efficient setting; every degree higher saves roughly 3-5% of cooling energy.
+- Winter: 68°F (20°C) while awake, lower while asleep or away.
+- The U.S. Department of Energy estimates you can save as much as 10% a year on heating and cooling by turning the thermostat back 7-10°F for 8 hours a day from its normal setting.
+- Avoid large manual swings: setting the thermostat colder than needed does not cool the house faster, it only overshoots.
+- Heat pumps: keep setbacks modest (2-4°F) in cold weather, or use a thermostat with adaptive recovery, so auxiliary electric resistance heat strips do not kick in during recovery.
+
+## Pre-cooling and pre-heating around peak prices
+On a time-of-use tariff, shift HVAC work out of the peak window instead of simply suffering through it.
+- Pre-cool: 1-3 hours before the peak begins (for example 13:00-16:00 when peak is 16:00-21:00), lower the setpoint 2-4°F below your normal comfort point. The house's thermal mass (walls, floors, furniture) stores that coolness.
+- During the peak: raise the setpoint 3-4°F above normal (for example 78-80°F). The home drifts up slowly and the compressor runs far less during the most expensive hours.
+- Pre-cooling works best on sunny days with rooftop solar, because the pre-cooling energy comes from your own panels at midday instead of the grid.
+- On critical-peak or grid-emergency days, pre-cool more aggressively (down to about 72-74°F) before the event and let the temperature float to your maximum comfort limit during it.
+- Well-insulated homes coast 3-5 hours; leaky homes may coast only 1-2 hours, so pre-cool closer to the peak start.
+- In winter, pre-heat in the afternoon off-peak hours and set back during the evening peak.
+
+## Ceiling fans and airflow
+- Ceiling fans let you raise the thermostat about 4°F with no loss of comfort, because moving air cools skin by evaporation.
+- A ceiling fan uses about 15-75 W, compared with 2,000-4,000 W for central air.
+- Fans cool people, not rooms: turn them off when you leave the room.
+- In winter, run fans clockwise on low to push warm air down from the ceiling.
+
+## Maintenance that preserves efficiency
+- Check the air filter monthly and replace it at least every 3 months; a clogged filter can raise energy use 5-15%.
+- Clean outdoor condenser coils each spring and keep 2 feet of clearance around the unit.
+- Have ducts sealed and insulated: in a typical house about 20-30% of the air moving through ducts is lost to leaks, holes and poorly connected sections.
+- Annual professional tune-ups keep the refrigerant charge correct; an incorrectly charged system can lose a significant share of its efficiency.
+
+## Reducing the heat load itself
+- Close blinds and curtains on south- and west-facing windows on hot afternoons; windows can account for a quarter or more of cooling load.
+- Seal air leaks around doors, windows, attic hatches and plumbing penetrations with caulk and weatherstripping.
+- Attic insulation to R-38 to R-60 (climate dependent) is one of the most cost-effective upgrades.
+- Avoid running the oven, dryer and dishwasher heated-dry during hot afternoons; they add heat the air conditioner must then remove.
+
+## Choosing equipment
+- Modern heat pumps provide 2-4 units of heat per unit of electricity (COP 2-4), far more efficient than electric resistance heat (COP 1).
+- Compare SEER2 (cooling) and HSPF2 (heating) ratings; higher is better. Variable-speed (inverter) heat pumps run longer at low power, which is quieter, more comfortable and more efficient.
+- Right-size equipment with a Manual J load calculation; oversized systems short-cycle and waste energy.

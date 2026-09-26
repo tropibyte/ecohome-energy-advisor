@@ -1,0 +1,35 @@
+# Renewable Energy Integration: Getting the Most from Rooftop Solar
+
+Rooftop solar produces free electricity only while the sun is up, and it peaks around solar noon (about 13:00 during daylight saving time). The value of each solar kWh depends on whether you use it yourself or export it.
+
+## Self-consumption versus export
+- Under California's Net Billing Tariff (often called NEM 3.0, in effect for new systems since April 2023) and similar tariffs elsewhere, exported solar is credited at a fraction of the retail price, often only a few cents per kWh, while grid power costs 25-50+ cents per kWh.
+- That means a solar kWh used at home is worth several times a solar kWh exported. The single most valuable habit for a solar household is shifting flexible loads into the middle of the day.
+- Self-consumption rate = solar used on site / total solar produced. Without any load shifting, many homes self-consume well under half of their production; with load shifting and a battery, 70-90% is achievable.
+
+## Scheduling around the solar curve
+- Production is highest from about 10:00 to 15:00. Schedule EV charging, pool pumps, dishwashers, laundry, water heater boosts and pre-cooling in that window on sunny days.
+- Check the next-day forecast. Cloud cover can cut production by 50-90%; heavy overcast or rain may reduce output to 10-20% of a clear day.
+- Coastal fog (common in San Francisco and other coastal cities) often suppresses morning production; it typically burns off by late morning, so schedule solar loads for early afternoon on foggy days.
+- Stagger large loads rather than starting them all at once so combined demand stays below solar output.
+
+## How much will my system produce?
+- A rough daily estimate: system size (kW) x peak sun hours x 0.75-0.85 system efficiency. A 7 kW system with 5.5 peak sun hours makes about 29-33 kWh on a clear day.
+- Panels lose about 0.3-0.5% of output per °C of cell temperature above 25°C, so very hot days produce slightly less per unit of sunlight than cool, clear days.
+- Panels degrade about 0.5% per year; a 20-year-old system still produces around 90% of its original output.
+
+## Keeping the system productive
+- Soiling (dust, pollen, bird droppings) can reduce output a few percent, more in dry dusty regions; rinse panels with water from the ground if output drops unexpectedly and rain has been absent for months.
+- Trim trees that begin to shade panels; partial shading of one panel can reduce a whole string's output unless microinverters or optimizers are installed.
+- Monitor daily production in your inverter app; compare sunny days of similar season. A sudden 20% drop usually means an inverter fault, a tripped breaker or shading.
+
+## Solar plus electric vehicles
+- An EV is the largest flexible load most homes have. Charging an EV from midday solar on weekends or work-from-home days turns cheap exports into fuel worth several dollars per charge.
+- Use the charger's solar-following mode, or set a charging schedule for 10:00-15:00 at a current your solar can cover (for example 16-24 A).
+
+## Solar plus a battery
+- A battery stores midday surplus for the evening peak, when grid power is most expensive and the grid is dirtiest.
+- Size the battery to cover evening peak consumption (for many homes 8-15 kWh between 16:00 and 21:00).
+
+## Environmental impact
+- Each kWh of solar you self-consume displaces grid electricity. Evening peak electricity is usually supplied by gas "peaker" plants, so moving consumption out of the evening peak and into solar hours reduces emissions more than the grid-average figure suggests.

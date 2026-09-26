@@ -1,0 +1,33 @@
+# Understanding Time-of-Use Electricity Rates
+
+With time-of-use (TOU) pricing, the price of electricity depends on the hour. Moving flexible consumption between hours is one of the easiest ways to save money without using less energy.
+
+## Typical TOU periods (EcoHome reference tariff)
+- Off-peak, 22:00-07:00: lowest price (about $0.22/kWh).
+- Solar midday, 10:00-15:00: low price (about $0.24/kWh) because solar floods the grid.
+- Mid-peak, 07:00-10:00, 15:00-16:00 and 21:00-22:00: moderate price (about $0.32/kWh plus a $0.02 demand adder).
+- On-peak, 16:00-21:00 on weekdays: highest price (about $0.48/kWh plus a $0.05 demand adder, about $0.53 effective).
+- Weekends: the 16:00-21:00 window is billed at mid-peak.
+- Critical-peak events: on grid-emergency days the 16:00-21:00 window roughly doubles (about $0.96 plus a $0.10 adder). They are announced a day ahead, usually during heat waves.
+- Prices drift a few percent from day to day; always check the day's hourly prices.
+
+## Why rates vary
+- Evening demand rises as people come home just as solar production falls, so utilities run their most expensive, least efficient power plants.
+- Midday prices are low because solar floods the grid.
+
+## Which loads to shift
+- Easy to shift: EV charging, dishwasher, washing machine, dryer, pool pump, water heater (with a timer or heat-pump scheduling), battery charging.
+- Partially shiftable: air conditioning (by pre-cooling), cooking (by planning).
+- Not shiftable: refrigerator, lighting when needed, medical equipment.
+
+## Estimating savings from load shifting
+- Savings = kWh moved x (price before - price after).
+- Example: a dishwasher cycle of 1.2 kWh moved from 20:00 on-peak ($0.53) to 23:00 off-peak ($0.22) saves about $0.37 per cycle, about $110 per year at 300 cycles.
+- Example: a 1.1 kW pool pump that runs 12:00-18:00 has two hours in the peak. Moving it to 09:00-15:00 saves about 2.2 kWh x ($0.53 - $0.24) ≈ $0.64 per weekday, and lets solar power it.
+
+## Demand charges
+- Some tariffs add a demand charge based on the highest power used in a period. Avoid running several large loads (EV, dryer, oven, air conditioner) at the same time during peak hours.
+
+## Reading your bill
+- Look at the kWh used in each period, not only the total. The goal is to move as many kWh as possible from on-peak to off-peak or solar hours.
+- Compare rate plans once a year using your actual hourly usage data; many utilities provide a rate comparison tool.

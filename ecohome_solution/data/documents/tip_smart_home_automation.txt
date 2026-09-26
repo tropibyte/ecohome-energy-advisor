@@ -1,0 +1,39 @@
+# Smart Home Automation for Energy Savings
+
+Automation turns good intentions into habits that happen every day without effort. The goal is simple: run flexible loads when electricity is cheap or solar is abundant, and avoid them during the evening peak.
+
+## Smart thermostats
+- ENERGY STAR certified smart thermostats save about 8% on heating and cooling bills on average by learning schedules and using occupancy sensing.
+- Use geofencing (phone location) to set back automatically when everyone leaves and to recover before arrival.
+- Enable time-of-use or utility demand-response modes: the thermostat pre-cools before the peak and eases off during it.
+- Remote temperature sensors in bedrooms let the system condition the rooms that matter at night instead of the hallway.
+
+## Scheduling flexible loads
+- Flexible loads are devices whose timing you can change without losing comfort: EV charging, dishwashers, washing machines, dryers, pool pumps, water heaters and battery charging.
+- Use delay-start on dishwashers and washers so they finish before morning (start after 22:00) or run midday on sunny days.
+- Create a rule "no flexible loads 16:00-21:00 on weekdays" to stay out of the on-peak window.
+- A simple rule of thumb for households with solar: if tomorrow's forecast is sunny, schedule flexible loads between 10:00 and 15:00; if it is cloudy, schedule them after 22:00.
+
+## Smart plugs and energy monitoring
+- Standby (phantom) power from electronics and chargers accounts for roughly 5-10% of residential electricity use.
+- Smart plugs or smart power strips can cut power to TVs, game consoles, printers and chargers on a schedule or when the main device turns off.
+- Whole-home energy monitors (current clamps in the panel) show which circuits use the most energy; many households find a forgotten always-on load such as an old freezer or a heated towel rail.
+- Review the monthly breakdown: a device that uses more than you expect is often failing (a refrigerator with a failing door seal, a pool pump with a clogged filter).
+
+## Solar-aware automation
+- Solar-following automations turn on loads when rooftop production exceeds household consumption, soaking up energy that would otherwise be exported for a low credit.
+- Typical excess-solar loads: EV charging at reduced amperage, pool pump, water heater boost, battery charging, pre-cooling.
+- Set a minimum export threshold (for example 1.5 kW of surplus for 10 minutes) before starting large loads so passing clouds do not cause rapid cycling.
+
+## Demand response programs
+- Many utilities pay customers to reduce load during grid emergencies (Flex Alerts, critical-peak events). Smart thermostats, EV chargers and batteries can enroll automatically.
+- During an event, the typical automation sequence is: pre-cool before the event, pause EV charging and pool pump, discharge the home battery, and let the thermostat drift up 3-4°F.
+
+## Lighting automation
+- LEDs use at least 75% less energy than incandescent bulbs and last up to 25 times longer.
+- Occupancy and vacancy sensors in garages, laundry rooms and closets eliminate lights left on.
+- Use daylight sensors and scheduled scenes for outdoor lighting instead of leaving it on all night.
+
+## Privacy and reliability
+- Prefer devices that keep working locally if the internet or cloud service is down.
+- Keep manual overrides simple so automation never overrides safety or comfort needs (for example medical equipment or extreme heat).

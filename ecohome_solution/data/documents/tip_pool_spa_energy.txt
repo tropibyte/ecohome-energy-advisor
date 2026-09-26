@@ -1,0 +1,29 @@
+# Pool and Spa Energy Management
+
+A pool pump can be one of the largest energy users in a home with a pool, often more than 1,000-2,000 kWh a year.
+
+## Variable-speed pumps
+- Pump power rises steeply with speed: halving pump speed cuts power to roughly one eighth, while moving half as much water. Running longer at low speed filters the same water with far less energy.
+- ENERGY STAR certified variable-speed pool pumps use substantially less energy than single-speed pumps, often cutting pump energy by more than half.
+
+## How long to run the pump
+- Most residential pools need the full volume filtered about once a day; with a variable-speed pump that is often 6-8 hours at low speed, not 12-24 hours.
+- Reduce runtime in cooler months when algae growth is slower.
+- Keep filters and skimmer baskets clean; a clogged filter makes the pump work harder for less flow.
+
+## When to run the pump
+- Run the pump during solar hours (about 09:00-15:00) if you have solar, or overnight off-peak if you do not.
+- Avoid running the pump into the 16:00-21:00 peak window; a 1.1 kW pump running two hours in the peak costs about $1.15 per day at weekday peak rates versus about $0.53 during solar-midday hours.
+- Split runtime into two blocks if needed for chlorination: one midday solar block and one short overnight block.
+
+## Heating and covers
+- Evaporation is the largest source of heat loss from pools. A pool cover can reduce heating costs 50-70% and cut water loss and chemical use.
+- Solar pool heaters (unglazed collectors) are among the most cost-effective uses of solar energy.
+- Heat pump pool heaters are far more efficient than electric resistance heaters; set the temperature to 78°F or lower.
+
+## Spas and hot tubs
+- Keep the cover on and in good condition; a waterlogged cover loses much of its insulating value.
+- Lower the temperature a few degrees when not in use for several days, and use economy mode to heat during off-peak or solar hours.
+
+## Chemistry
+- Balanced water chemistry reduces the filtration time needed to keep water clear.

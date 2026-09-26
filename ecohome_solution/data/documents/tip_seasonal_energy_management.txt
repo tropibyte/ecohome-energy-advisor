@@ -1,0 +1,38 @@
+# Seasonal Energy Management
+
+Energy needs change through the year. A plan for each season keeps bills low and avoids surprises.
+
+## Summer (cooling season)
+- Biggest costs: air conditioning during hot afternoons and evenings, pool pumps.
+- Set cooling to 78°F when home and higher when away; use ceiling fans to feel 4°F cooler.
+- Pre-cool on hot days before the 16:00 peak, preferably with midday solar, then let the house coast through the peak.
+- Heat waves often bring grid emergencies and critical-peak prices. Watch for utility alerts and plan pre-cooling, EV charging and laundry around them.
+- Close blinds on west-facing windows by early afternoon.
+- Solar production is highest in late spring and summer: this is the best season to move flexible loads to midday.
+- Run the pool pump in the morning and midday on solar, not into the evening peak.
+
+## Autumn (shoulder season)
+- Mild temperatures: open windows at night and close them in the morning to use free "night flushing" cooling.
+- Service the heating system before the first cold snap; replace the filter.
+- Check weatherstripping and caulking before winter; small leaks add up.
+- In coastal climates, late September and October can bring the hottest days of the year; keep summer strategies ready.
+- Solar output starts to fall as days shorten; revisit load schedules so midday loads still fit inside the shorter solar window.
+
+## Winter (heating season)
+- Set heating to 68°F while awake and 60-65°F while asleep or away.
+- Heat pumps: prefer small setbacks so auxiliary resistance heat does not run during recovery.
+- Solar production can be 40-60% lower than in summer because of short days, low sun and clouds. Rely more on off-peak overnight hours for EV charging and laundry.
+- Let the sun in: open south-facing curtains during the day and close all curtains at night to reduce heat loss.
+- Reverse ceiling fans to clockwise at low speed to push warm air down.
+- Insulate and seal: winter is when drafts are easiest to find (a lit incense stick near windows and outlets shows air movement).
+
+## Spring (shoulder season)
+- Clean or service the air conditioner and outdoor coils before summer.
+- Rinse solar panels if pollen or dust has built up after a dry winter.
+- Longer days bring back strong midday solar: move EV charging and pool pump runtime back into the 10:00-15:00 window.
+- Many utilities have lower demand in spring; it is a good time to review your rate plan and switch if another time-of-use plan fits your habits better.
+
+## Year-round habits
+- Review last month's usage by device and compare with the same month last year.
+- Keep a seasonal checklist: filter changes, coil cleaning, panel cleaning, water heater flush.
+- Re-check the thermostat schedule at every daylight saving time change, since time-of-use windows follow clock time.

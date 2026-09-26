@@ -1,0 +1,19 @@
+{
+  "documents": {
+    "tip_device_best_practices.txt": "58d63533aa1878ba",
+    "tip_energy_savings.txt": "557e4c1d7307b0d7",
+    "tip_energy_storage_optimization.txt": "dc331e8ea1db7a56",
+    "tip_ev_charging_strategies.txt": "44b8322328525f37",
+    "tip_hvac_optimization.txt": "9dc8a641119321ce",
+    "tip_pool_spa_energy.txt": "a24a06c5f0fd71e7",
+    "tip_renewable_solar_integration.txt": "7c3b45259b6c7cd2",
+    "tip_seasonal_energy_management.txt": "221d0e55bde18649",
+    "tip_smart_home_automation.txt": "9b4da3c2436d4d68",
+    "tip_time_of_use_rates.txt": "55ef1e0586fcf653",
+    "tip_water_heating.txt": "c65b3ba6c6939360"
+  },
+  "embedding": "text-embedding-3-small",
+  "chunk_size": 900,
+  "chunk_overlap": 150,
+  "chunks": 49
+}

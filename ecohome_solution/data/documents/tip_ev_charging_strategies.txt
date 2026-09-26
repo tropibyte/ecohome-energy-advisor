@@ -1,0 +1,35 @@
+# Electric Vehicle Charging Strategies
+
+An EV is typically the largest flexible load in the home: a 30 kWh charge costs about $16 during a weekday on-peak window at around $0.53/kWh effective, but about $6.60 off-peak at around $0.22/kWh. Timing is everything.
+
+## Charging levels
+- Level 1 (120 V household outlet, about 1.2-1.4 kW): adds roughly 3-5 miles of range per hour. Adequate for short commutes if the car is plugged in overnight.
+- Level 2 (240 V, typically 7-11.5 kW): adds roughly 20-35 miles of range per hour for an efficient sedan. A 7.7 kW charger refills a 30 kWh deficit in about 4 hours.
+- DC fast charging: for road trips; typically far more expensive per kWh than home charging and harder on the battery if used daily.
+
+## Cheapest time to charge
+- On time-of-use plans, the cheapest window is usually overnight off-peak (for example 22:00-07:00). Set a scheduled departure time and let the car finish charging just before you leave.
+- If you have solar and the car is home midday (weekends, work-from-home days), charging 10:00-15:00 on sunny days uses your own solar, which is worth more used at home than exported.
+- Avoid plugging in and charging immediately on arrival at 17:00-19:00 on a weekday: that is the most expensive and most carbon-intensive time on most grids.
+- Use the car's or charger's scheduling feature rather than remembering to plug in later.
+
+## How much charge do you need?
+- Daily energy need ≈ miles driven x vehicle efficiency. At 0.25-0.30 kWh per mile, a 35-mile day needs about 9-11 kWh, which is only about 1.5 hours on a 7.7 kW Level 2 charger.
+- You do not need to charge to full every night. Many owners charge every 2-3 days, or daily to a lower limit.
+
+## Battery longevity
+- Most manufacturers recommend a daily charge limit around 80-90% and charging to 100% only before long trips (LFP batteries are an exception; some makers recommend charging them to 100% regularly).
+- Avoid leaving the car at very high or very low state of charge for long periods, especially in heat.
+- Preconditioning the cabin and battery while still plugged in uses grid or solar power instead of range.
+
+## Efficiency and losses
+- Level 2 charging is typically 85-90% efficient from wall to battery; Level 1 is somewhat less efficient because of fixed overheads over longer sessions.
+- Cold weather reduces range and slows charging; precondition in winter.
+
+## Calculating charging cost and savings
+- Cost of a session = kWh delivered x effective rate for each hour charged.
+- Savings from shifting = kWh x (on-peak rate - off-peak rate). Example: 30 kWh moved from $0.53 to $0.22 saves about $9.30 per session; at 150 sessions a year that is about $1,400.
+- Carbon: evening peak electricity is often supplied by gas peaker plants, so shifting charging to midday solar or overnight also cuts emissions.
+
+## Managed charging programs
+- Many utilities and automakers offer managed charging programs that pay a bonus for letting them schedule charging, and some offer special EV rate plans with very low overnight prices.
