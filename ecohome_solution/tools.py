@@ -536,6 +536,15 @@ def calculate_energy_savings(device_type: str, current_usage_kwh: float,
     - load shifting (same kWh, cheaper hours): pass equal kWh, price_per_kwh = current
       effective rate and optimized_price_per_kwh = new effective rate.
 
+    Worked examples (use real rates from get_electricity_prices; on-peak exists on weekdays only):
+    - Dishwasher moved from 20:00 on-peak to 23:00 off-peak: current_usage_kwh=1.2, optimized_usage_kwh=1.2,
+      price_per_kwh=0.53, optimized_price_per_kwh=0.22, frequency_per_year=300, shifted_out_of_peak=True.
+    - Home battery storing solar for the evening peak: current_usage_kwh = optimized_usage_kwh = kWh shifted per
+      day (e.g. 12), price_per_kwh = peak effective rate avoided (e.g. 0.53), optimized_price_per_kwh = what that
+      energy would otherwise earn / round-trip efficiency (export credit 0.05 / 0.9 = 0.056),
+      frequency_per_year=260 (weekdays), upfront_cost_usd = installed cost. Never model a battery as extra
+      consumption (current_usage_kwh=0).
+
     Args:
         device_type (str): Type of device being optimized
         current_usage_kwh (float): Current energy usage in kWh (per run or per day)

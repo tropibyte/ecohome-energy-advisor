@@ -53,6 +53,34 @@ MAX_TOOL_OUTPUT_CHARS = 24_000  # guardrail against a tool flooding the context 
 DEFAULT_KEYS = set(DEFAULT_HOUSEHOLD_PROFILE)
 
 
+# (question pattern, tool that must have run successfully, critique sent back if it did not).
+# Added after review: savings answers were being released without calculate_energy_savings, and
+# recent-performance questions were answered from raw usage queries instead of the summary tool.
+REQUIRED_TOOL_RULES = [
+    (re.compile(r"\b(save|saves|saving|savings|pay (?:off|back)|payback|roi|return on investment)\b", re.I),
+     "calculate_energy_savings",
+     "This is a savings question, so the figures must come from calculate_energy_savings. Call it with the real "
+     "kWh and the effective rates from your tool results (price_per_kwh = current effective rate, "
+     "optimized_price_per_kwh = new rate for load shifting; frequency_per_year; upfront_cost_usd if a cost was "
+     "given) and state the saving per run/cycle and per year (and the payback period when relevant)."),
+    (re.compile(r"\b(last|past)\s+(\d+\s+)?(hours?|day)\b|\btoday so far\b|\bright now\b|\brecent(ly)?\b"
+                r"|\bhow (?:is|has|was) my (?:home|house)\b", re.I),
+     "get_recent_energy_summary",
+     "This asks how the home has been doing recently, so call get_recent_energy_summary (hours=24 unless the "
+     "user gave a period) and report consumption, cost, solar generation and self-sufficiency from it."),
+    (re.compile(r"(?=.*\b(solar|panels?)\b)(?=.*\b(yesterday|last (week|month)|past (week|month|\d+ days))\b)",
+                re.I | re.S),
+     "query_solar_generation",
+     "This asks about past solar production, so call query_solar_generation for that date range and quote its "
+     "totals (and best/worst day where useful)."),
+    (re.compile(r"(?=.*\b(use|used|usage|consum\w*|cost)\b)(?=.*\b(yesterday|last (week|month)|past (week|month|\d+ days))\b)",
+                re.I | re.S),
+     "query_energy_usage",
+     "This asks about energy use over a past period, so call query_energy_usage for that date range and quote its "
+     "consumption and cost figures."),
+]
+
+
 def _to_builtin(obj: Any) -> Any:
     """json.dumps fallback: numpy/pandas scalars via .item(), everything else as a string."""
     if hasattr(obj, "item"):
@@ -88,7 +116,7 @@ class Agent:
     def __init__(self, instructions: str, model: str = config.CHAT_MODEL, temperature: float = 0.0,
                  tools: Optional[Sequence] = None, max_iterations: int = 10, llm: Optional[BaseChatModel] = None,
                  max_retries: int = 3, include_household_profile: bool = True, verify_answers: bool = True,
-                 max_revisions: int = 1):
+                 max_revisions: int = 2):
         """
         Args:
             instructions: system prompt describing the Energy Advisor's role and method
@@ -101,7 +129,7 @@ class Agent:
             max_retries: retries for transient LLM errors
             include_household_profile: inject the saved household profile into the context
             verify_answers: run the quality gate (knowledge-base use and citation checks) before finalising
-            max_revisions: how many times the quality gate may send an answer back for revision
+            max_revisions: how many times the quality gate may send an answer back for revision (default 2)
         """
         if not instructions or not instructions.strip():
             raise ValueError("Agent instructions must not be empty - pass ECOHOME_SYSTEM_PROMPT.")
@@ -257,6 +285,12 @@ class Agent:
             if re.search(r"source:(?!\s*tip_)", answer, re.I):  # whitespace inside the lookahead: no backtracking
                 issues.append("Every citation must be an exact file name returned by search_energy_tips, "
                               "written as (source: tip_name.txt).")
+            # Question types that must be backed by a specific tool before the answer can be released.
+            succeeded = {t["tool"] for t in log if t["status"] == "success"}
+            question = state.get("question") or ""
+            for pattern, tool_name, instruction in REQUIRED_TOOL_RULES:
+                if pattern.search(question) and tool_name not in succeeded:
+                    issues.append(instruction)
         revisions = state.get("revisions", 0)
         decisions = list(state.get("decisions", []))
         if issues and revisions < self.max_revisions:

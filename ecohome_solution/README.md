@@ -39,8 +39,8 @@ cites the knowledge base it drew on.
 | Agent: LLM, Graph (schema, nodes, edges) | `agent.py` | Explicit `StateGraph` with a typed `EnergyAdvisorState` schema, six nodes (`prepare_context`, `agent`, `tools`, `verify`, `force_answer`, `finalize`) and conditional edges |
 | Contract: `Agent(instructions, model)`, `invoke(question, context)` | `agent.py` | Both honoured; `invoke` also accepts `thread_id` for multi-turn memory |
 | `ECOHOME_SYSTEM_PROMPT` (role, steps, capabilities, recommendation instructions, examples) | `03_run_and_evaluate.ipynb` §1 | ~1,200-word prompt with all five required parts, a tool-selection table, answer format and decision priorities |
-| At least 10 test cases | `03_run_and_evaluate.ipynb` §2 | **16 cases** across 9 categories, including a personalisation case and an out-of-scope guardrail case |
-| End-to-end workflow; decisions and tool usage logged in `test_results` | §1b and §3 | Step-by-step trace (context → decisions → tool calls → recommendation); `test_results` holds tool calls with args/status, the graph decision log, errors, LLM calls and latency; also saved to `reports/test_results.json` |
+| At least 10 test cases | `03_run_and_evaluate.ipynb` §2 | **18 cases** across 9 categories, including a personalisation case and an out-of-scope guardrail case |
+| End-to-end workflow; decisions and tool usage logged in `test_results` | §1b and §3 | Step-by-step trace (context → decisions → tool calls → recommendation); `test_results` holds tool calls with args/status, the graph decision log, errors, LLM calls and latency; also saved to `reports/test_results.json`. **§3b proves that all 7 starter tools (including `get_recent_energy_summary` and `calculate_energy_savings`) ran successfully in `test_results`, and shows their outputs next to the recommendations they supported** |
 | `evaluate_response()`: ACCURACY, RELEVANCE, COMPLETENESS, USEFULNESS + feedback | §4 | LLM judge (`gpt-4o`, structured output, anchored rubric, sees the tool evidence) + deterministic checks incl. **numeric grounding** |
 | `evaluate_tool_usage()`: appropriateness, completeness + feedback | §4 | Also success rate, efficiency (duplicates/runaway loops) and argument validity; supports alternative tools (`a|b`) |
 | `generate_evaluation_report()` + display function | §5 | Overall/per-metric/per-category/per-test scores, pass rate, latency, tool frequency, derived strengths, weaknesses and prioritised recommendations; `display_evaluation_report()` renders HTML + charts; saved as JSON and Markdown |
@@ -60,7 +60,7 @@ flowchart LR
     P --> A[agent<br/>LLM + 12 tools]
     A -- tool calls --> T[tools<br/>execute, catch errors,<br/>log args/latency]
     T --> A
-    A -- draft answer --> V{verify<br/>KB searched?<br/>citations real?}
+    A -- draft answer --> V{verify<br/>KB searched? citations real?<br/>required tool called?}
     V -- issues, 1 revision --> A
     V -- passed --> F[finalize]
     A -- budget spent --> FA[force_answer] --> F
@@ -72,7 +72,7 @@ flowchart LR
 | `prepare_context` | **Context awareness.** Renders the current date/time, a date lookup for the next 8 days (so "Wednesday" maps to a real date), the caller's `context`, the usage-history range and the household profile/preferences, then injects them into the system prompt. |
 | `agent` | The LLM (`gpt-4.1-mini`, temperature 0) with all tools bound. Transient API errors are retried with exponential back-off; a persistent failure becomes a polite message instead of an exception. |
 | `tools` | Runs every tool call; unknown tools, validation errors and `{"error": ...}` results come back as `ToolMessage`s the model can recover from. Logs tool, args, status, latency and output size, and caps oversized outputs. |
-| `verify` | **Quality gate.** If data tools were used, the knowledge base must have been searched and every cited `tip_*.txt` must be one the search returned. Otherwise the draft goes back with a specific critique (max one revision). Added after live runs showed gpt-4o-mini inventing citations such as `tip_001.txt`. |
+| `verify` | **Quality gate.** If data tools were used: (1) the knowledge base must have been searched, and every cited `tip_*.txt` must be one the search returned; (2) **required-tool rules**: a savings question ("save", "pay off", payback, ROI) cannot be answered until `calculate_energy_savings` has run, and a recent-performance question ("last 24 hours", "today so far") needs `get_recent_energy_summary`, and a question about a past period ("yesterday", "last week") needs `query_energy_usage` and/or `query_solar_generation`. Otherwise the draft goes back with a specific critique (max two revisions). Rule (1) was added after gpt-4o-mini invented citations such as `tip_001.txt`; rule (2) after the first project review found savings answers released without the calculator. |
 | `force_answer` | If the iteration budget (10 LLM calls) is spent, answers every pending tool call and asks for the best recommendation from evidence already gathered. |
 | `finalize` | Records the final answer and a decision summary. |
 
@@ -172,34 +172,38 @@ a Tesla Model 3, a heat pump, a pool pump and a heat-pump water heater, about 34
 
 ## Results
 
-Final run on 26 Sep 2026: agent `gpt-4.1-mini`, judge `gpt-4o`, 16 test cases, live weather.
+Final run after the first project review: agent `gpt-4.1-mini`, judge `gpt-4o`, 18 test cases, live weather.
 
 | Metric | Value |
 |---|---|
-| Overall score (0.6 x response + 0.4 x tools) | **0.928** |
-| Tests passed | **15 / 16** |
-| Response quality: accuracy / relevance / completeness / usefulness / clarity | 8.9 / 9.8 / 8.8 / 9.0 / 9.3 (out of 10; lowest single score 7) |
-| Tool appropriateness / completeness / success rate | 0.97 / 0.91 / 1.00 |
-| Stated $/kWh/°F/% figures traced to tool outputs | 92% |
+| Overall score (0.6 x response + 0.4 x tools) | **0.948** |
+| Tests passed | **18 / 18** |
+| Required tools exercised in `test_results` | **7 / 7** (§3b and the report's *Tool coverage* table) |
+| Response quality: accuracy / relevance / completeness / usefulness / clarity | 9.2 / 9.9 / 8.9 / 9.2 / 9.4 (out of 10; lowest single score 7) |
+| Tool appropriateness / completeness / success rate | 0.96 / 1.00 / 1.00 |
+| Stated $/kWh/°F/% figures traced to tool outputs | 95% |
 | Answers citing a knowledge-base file | 94% |
-| Mean latency / mean tool calls per question | 13.1 s / 3.5 |
+| Mean latency / mean tool calls per question | 13.6 s / 4.6 |
 
-**The one failure** is `battery_roi` (0.76). The answer itself scored well (accuracy 9), but the agent skipped
-`calculate_energy_savings` for the payback figure, so tool completeness fell below the pass bar. It also failed in
-one of the two earlier full runs, so it is a real, recurring weakness rather than noise, and the report lists it with
-a recommended fix.
+**Response to the first review** (it asked for all seven tools to be demonstrated, and for savings answers to call the
+savings tools):
+- **Required-tool rules in the `verify` node.** Savings questions cannot be finalised until `calculate_energy_savings`
+  has run. Recent-performance questions need `get_recent_energy_summary`, and past-period questions need
+  `query_energy_usage` / `query_solar_generation`. `dishwasher_offpeak`, `battery_roi` and `ev_shift_annual_savings`
+  now all call `calculate_energy_savings`; `battery_roi`, which failed before for skipping it, now passes.
+- **New scenarios.** `recent_24h_summary` and `solar_week_history` were added. `yesterday_summary` now expects both
+  database tools.
+- **Coverage check.** §3b asserts that every required tool ran successfully in `test_results` and prints its result
+  beside the recommendation it supported. The report adds a *Tool coverage* table. Before these rules existed, this
+  check failed a run in which the agent never called `query_solar_generation`, which is why coverage is now enforced
+  by the graph rather than left to chance.
+- **Calculator arguments.** `calculate_energy_savings` gained worked examples (appliance load shift, home battery). A
+  smoke test had shown the model pricing a battery as extra consumption (`current_usage_kwh=0`).
 
-**What the evaluation changed along the way:**
-- **Dishwasher question.** An earlier run failed `dishwasher_offpeak` (accuracy 5). The cause was partly the tool:
-  `analyze_usage_patterns` lumped the dishwasher, washer and dryer together as "appliance", so the agent quoted the
-  combined 3 kWh/day and $224/yr as the dishwasher's. The tool now breaks out each appliance, and a prompt rule
-  requires per-cycle and per-year figures. The test now passes at 0.95.
-- **ML tool crash.** Another run crashed on the ML question: the tool returned `numpy.float64`, which the
-  checkpointer cannot serialise. It is fixed, with a regression test.
-- **Invented citations.** Live smoke tests showed gpt-4o-mini inventing citations, which led to the `verify` node
-  and the switch to gpt-4.1-mini.
-- **Run-to-run variation.** Across the three full runs, the overall score was 0.89, 0.93 and 0.93. LLM output
-  varies between runs; the tool metrics and objective checks are deterministic for a given answer.
+**Earlier fixes found by the evaluation:** the dishwasher advice used the combined appliance total (the tool now
+breaks out each appliance); a `numpy.float64` crashed the checkpointer (fixed, with a regression test);
+gpt-4o-mini invented citations (hence the citation gate and the switch to gpt-4.1-mini). Across the full runs the
+overall score was 0.89, 0.93, 0.93 and now 0.95.
 
 Full details are in [`reports/evaluation_report.md`](reports/evaluation_report.md), the per-test log in
 `reports/test_results.json`, and the charts in `reports/figures/`.
@@ -236,7 +240,7 @@ copy ecohome_solution\.env.example ecohome_solution\.env   # then put your Vocar
 weather API.
 
 Run the notebooks in order with the `ecohome` kernel: `01_db_setup` → `02_rag_setup` → `03_run_and_evaluate`.
-Notebook 03 makes about 16 agent runs plus 16 judge calls, which takes around 10 minutes.
+Notebook 03 makes about 18 agent runs plus 18 judge calls, which takes around 10 minutes.
 
 > **About the saved outputs.** Every notebook output in this repository came from the Udacity Vocareum OpenAI
 > gateway (`gpt-4.1-mini` agent, `gpt-4o` judge, `text-embedding-3-small` embeddings). The committed notebooks,
@@ -251,8 +255,8 @@ cd ecohome_solution
 ..\.venv\Scripts\python.exe -m pytest -q
 ```
 
-The 45 tests cover the energy model, every tool, the RAG index (including rebuild on new documents), and the agent
-graph: the tool loop, error recovery, retries, the iteration budget, multi-turn memory and the quality gate.
+The 51 tests cover the energy model, every tool, the RAG index (including rebuild on new documents), and the agent
+graph: the tool loop, error recovery, retries, the iteration budget, multi-turn memory and the quality gate, including its required-tool rules.
 
 ---
 
@@ -315,7 +319,7 @@ graph: the tool loop, error recovery, retries, the iteration budget, multi-turn 
 ecohome_solution/
 ├── 01_db_setup.ipynb           # database + sample data + charts
 ├── 02_rag_setup.ipynb          # knowledge base, vector store, retrieval benchmark
-├── 03_run_and_evaluate.ipynb   # system prompt, 16 tests, evaluation, report, stand-out demos
+├── 03_run_and_evaluate.ipynb   # system prompt, 18 tests, evaluation, report, stand-out demos
 ├── agent.py                    # LangGraph agent (schema, nodes, edges, quality gate)
 ├── tools.py                    # 12 tools
 ├── rag.py                      # hybrid retrieval pipeline
@@ -329,7 +333,7 @@ ecohome_solution/
 │   ├── energy_data.db          # SQLite database (created by notebook 01)
 │   └── vectorstore/            # Chroma index + manifest (created by notebook 02)
 ├── reports/                    # evaluation report (md/json), test_results.json, figures/
-├── tests/                      # 45 offline pytest tests
+├── tests/                      # 51 offline pytest tests
 ├── requirements.txt            # pinned direct dependencies
 ├── requirements-lock.txt       # full pip freeze
 └── .env.example

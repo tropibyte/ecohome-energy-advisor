@@ -57,8 +57,16 @@ Tool-use rules:
   `calculate_energy_savings` so the plan has a dollar figure.
 - Every **Savings** section must contain a dollar figure from `calculate_energy_savings` or `optimize_device_schedule`.
   Pass the real `effective_rate` values from `get_electricity_prices`; never rely on the calculator's default price.
-- "How much can I save by ..." questions: always call `optimize_device_schedule` (or `calculate_energy_savings`
-  with real effective rates) and state the saving **per run/cycle and per year**.
+- Savings questions ("how much can I save", "would X pay off", payback, ROI): you **must** call
+  `calculate_energy_savings` with the real kWh and the effective rates from your other tool results, and state the
+  saving **per run/cycle and per year** (plus payback years when a cost is given). `optimize_device_schedule` can
+  find the window, but the quoted saving comes from `calculate_energy_savings`. An automated check blocks savings
+  answers that did not call it. For typical or annual savings, compare using a **weekday's** prices (the 16:00-21:00
+  on-peak exists only on weekdays; weekends are billed mid-peak) unless the user names a specific day.
+- Questions about recent performance ("last 24 hours", "today so far", "how has my home been doing"): call
+  `get_recent_energy_summary` and report consumption, cost, solar and self-sufficiency from it.
+- Questions about a past period ("yesterday", "last week", "past 30 days"): call `query_energy_usage` for
+  consumption/cost and `query_solar_generation` for solar production over exactly that date range.
 - "Based on my usage/history" questions: start with `analyze_usage_patterns`. For a single appliance (dishwasher,
   washer, dryer) use that device's own figures (`by_device_name`, or `device_type="dishwasher"`), never the
   "appliance" category total, which combines several machines.
@@ -254,14 +262,35 @@ test_cases = [
                              "import, the expected cost, and one or two ways to lower it.",
     },
     {
+        "id": "recent_24h_summary",
+        "category": "Usage analysis & personalization",
+        "question": "How has my home been doing over the last 24 hours? I'd like consumption, cost, solar and how "
+                    "self-sufficient we were.",
+        "expected_tools": ["get_recent_energy_summary"],
+        "acceptable_tools": ["query_energy_usage", "query_solar_generation", "analyze_usage_patterns",
+                             "get_electricity_prices", "calculate_energy_savings"],
+        "expected_response": "Figures for the last 24 hours from the summary tool: total consumption (kWh), cost ($), "
+                             "solar generation (kWh), self-sufficiency and self-consumption percentages, the biggest "
+                             "consuming devices, and one concrete improvement.",
+    },
+    {
         "id": "yesterday_summary",
         "category": "Usage analysis & personalization",
         "question": "How did my home do yesterday? Give me consumption, solar production and cost.",
-        "expected_tools": ["query_energy_usage|get_recent_energy_summary",
-                           "query_solar_generation|get_recent_energy_summary"],
+        "expected_tools": ["query_energy_usage", "query_solar_generation"],
         "acceptable_tools": ["analyze_usage_patterns"],
         "expected_response": "Yesterday's total consumption (kWh), solar generation (kWh), cost ($) and the main "
                              "consuming devices, with one improvement suggestion.",
+    },
+    {
+        "id": "solar_week_history",
+        "category": "Solar power maximization",
+        "question": "How much did my solar panels produce over the last week, and which day was best and worst?",
+        "expected_tools": ["query_solar_generation"],
+        "acceptable_tools": ["get_weather_forecast", "analyze_usage_patterns", "get_recent_energy_summary",
+                             "query_energy_usage"],
+        "expected_response": "Total and average daily solar generation for the last 7 days from the database, the best "
+                             "and worst day with their weather, and one way to use more of the solar on good days.",
     },
     {
         "id": "seasonal_winter",
@@ -350,6 +379,8 @@ for i, test_case in enumerate(test_cases):
             'tool_calls': calls,                     # every call with arguments and status
             'tool_log': response["tool_log"],        # graph-level log incl. latency and full outputs
             'decisions': response["decisions"],      # routing decisions taken by the graph
+            'verification': response.get("verification"),  # quality-gate outcome (required tools, citations)
+            'revisions': response.get("revisions", 0),
             'errors': response["errors"],
             'llm_calls': response["iterations"],
             'latency_s': response["latency_s"],
@@ -780,7 +811,12 @@ def generate_evaluation_report(test_results=None, evaluation_results=None, pass_
         "weaknesses": weaknesses or ["No metric fell below its threshold."],
         "recommendations": recs,
         "tool_errors": tool_errors,
+        "tool_coverage": tool_coverage(test_results),
     }
+    if report["tool_coverage"]["missing_required"]:
+        report["weaknesses"].append(f"Required tools never called: {report['tool_coverage']['missing_required']}.")
+    else:
+        report["strengths"].append("All 7 required tools were exercised successfully by at least one test.")
 
     config.REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     (config.REPORTS_DIR / "evaluation_report.json").write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
@@ -799,6 +835,11 @@ def report_to_markdown(report):
     lines += [f"| {m} | {s['mean']} | {s['min']} | {s['max']} |" for m, s in report["response_metrics"].items()]
     lines += ["", "## Tool usage (0-1)", "| Metric | Mean |", "|---|---|"]
     lines += [f"| {m} | {v} |" for m, v in report["tool_metrics"].items()]
+    cov = report["tool_coverage"]
+    lines += ["", "## Tool coverage", f"Required tools covered: {cov['required_covered']}/{len(REQUIRED_TOOLS)}",
+              "| Tool | Required | Successful calls | Tests |", "|---|---|---|---|"]
+    lines += [f"| {t['tool']} | {'yes' if t['required'] else ''} | {t['successful_calls']} | {', '.join(t['tests'])} |"
+              for t in cov["table"]]
     lines += ["", "## By category", "| Category | Response | Tools | Combined |", "|---|---|---|---|"]
     lines += [f"| {c['category']} | {c['response_score']} | {c['tool_score']} | {c['combined_score']} |"
               for c in report["category_scores"]]
@@ -858,6 +899,9 @@ def display_evaluation_report(report):
     def bullets(title, items, colour):
         lis = "".join(f"<li>{_html.escape(str(x))}</li>" for x in items)
         return f"<h3 style='color:{colour}'>{title}</h3><ul>{lis}</ul>"
+    cov = report["tool_coverage"]
+    display(HTML(f"<h3>Tool coverage: {cov['required_covered']}/{len(REQUIRED_TOOLS)} required tools exercised</h3>"))
+    display(pd.DataFrame(cov["table"]).set_index("tool"))
     display(HTML(bullets("Strengths", report["strengths"], "#2e7d32")
                  + bullets("Weaknesses", report["weaknesses"], "#c62828")
                  + bullets("Recommendations for improvement", report["recommendations"], "#1565c0")
@@ -1022,6 +1066,51 @@ print("\\nSaved reports/test_results.json")
 """),
 code("""
 test_results
+"""),
+md("""
+### 3b. Tool coverage: every required tool is exercised
+
+The seven tools of the starter `TOOL_KIT` must each be demonstrated inside `test_results`. This cell checks that
+from the logged tool calls (it raises if any required tool never ran successfully) and prints each tool's result
+next to the recommendation it supported. It pays particular attention to `get_recent_energy_summary` and
+`calculate_energy_savings`, which the `verify` node now requires for recent-performance and savings questions.
+"""),
+code("""
+# The seven tools of the starter TOOL_KIT, which every submission must demonstrate in test_results.
+REQUIRED_TOOLS = ["get_weather_forecast", "get_electricity_prices", "query_energy_usage", "query_solar_generation",
+                  "get_recent_energy_summary", "search_energy_tips", "calculate_energy_savings"]
+
+
+def tool_coverage(test_results):
+    # Which tools ran successfully, how often and in which tests; flags required tools never exercised.
+    rows = {}
+    for r in test_results:
+        for t in r.get("tool_log", []):
+            row = rows.setdefault(t["tool"], {"tool": t["tool"], "required": t["tool"] in REQUIRED_TOOLS,
+                                              "successful_calls": 0, "failed_calls": 0, "tests": []})
+            row["successful_calls" if t["status"] == "success" else "failed_calls"] += 1
+            if r["test_id"] not in row["tests"]:
+                row["tests"].append(r["test_id"])
+    for name in REQUIRED_TOOLS:
+        rows.setdefault(name, {"tool": name, "required": True, "successful_calls": 0, "failed_calls": 0, "tests": []})
+    table = sorted(rows.values(), key=lambda x: (not x["required"], -x["successful_calls"]))
+    missing = [t["tool"] for t in table if t["required"] and t["successful_calls"] == 0]
+    return {"table": table, "required_covered": len(REQUIRED_TOOLS) - len(missing), "missing_required": missing}
+
+
+coverage = tool_coverage(test_results)
+display(pd.DataFrame(coverage["table"]).set_index("tool"))
+assert not coverage["missing_required"], f"required tools never exercised: {coverage['missing_required']}"
+print(f"All {len(REQUIRED_TOOLS)} required tools were called successfully in test_results.")
+
+for name in ("get_recent_energy_summary", "calculate_energy_savings"):
+    r = next(r for r in test_results if any(t["tool"] == name for t in r["tool_log"]))
+    call = next(t for t in r["tool_log"] if t["tool"] == name)
+    print(f"\\n=== {name} in test '{r['test_id']}' ===")
+    print("args  :", json.dumps(call["args"]))
+    print("result:", json.dumps(call["output"], default=str)[:700])
+    print("quality gate:", r["verification"], "| revisions:", r["revisions"])
+    display(Markdown(r["final_response"]))
 """),
 md("""
 ## 4. Evaluate Responses

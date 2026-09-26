@@ -160,7 +160,7 @@ def test_verify_allows_out_of_scope_answers_without_tools(scripted):
 
 def test_verify_revises_at_most_once(scripted):
     llm = scripted(_prices_call(), "Draft without tips.", "Still without tips.")
-    r = Agent(instructions=PROMPT, llm=llm).invoke("When should I charge?")
+    r = Agent(instructions=PROMPT, llm=llm, max_revisions=1).invoke("When should I charge?")
     assert r["final_answer"] == "Still without tips."
     assert r["revisions"] == 1 and not r["verification"]["passed"]
 
@@ -173,3 +173,67 @@ def test_numpy_tool_output_survives_the_checkpointer(scripted):
     assert r["final_answer"] == "Tomorrow: about 35 kWh."
     assert r["tool_log"][0]["status"] == "success"
     assert type(r["tool_log"][0]["output"]["predicted_total_kwh"]) is float
+
+
+# ------------------------------------------------- required-tool rules (review round 1)
+def _savings_call(i="s1"):
+    return AIMessage(content="", tool_calls=[tool_call("calculate_energy_savings", {
+        "device_type": "dishwasher", "current_usage_kwh": 1.2, "optimized_usage_kwh": 1.2, "price_per_kwh": 0.53,
+        "optimized_price_per_kwh": 0.22, "frequency_per_year": 300}, i)])
+
+
+def test_savings_question_cannot_finish_without_calculate_energy_savings(scripted):
+    llm = scripted(_tips_call(), "You save about $0.37 per cycle (source: tip_ev_charging_strategies.txt).",
+                   _savings_call(), "You save $0.37 per cycle, $111.60 a year (source: tip_ev_charging_strategies.txt).")
+    r = Agent(instructions=PROMPT, llm=llm).invoke("How much can I save by running my dishwasher off-peak?")
+    critique = next(m for m in r["messages"] if m.type == "human" and "quality check" in m.content)
+    assert "calculate_energy_savings" in critique.content
+    assert "calculate_energy_savings" in [t["tool"] for t in r["tool_log"]]
+    assert r["verification"]["passed"] and r["final_answer"].startswith("You save $0.37 per cycle, $111.60")
+
+
+def test_payback_question_requires_savings_tool_too(scripted):
+    llm = scripted(_tips_call(), "Payback is about 7 years (source: tip_energy_storage_optimization.txt).")
+    r = Agent(instructions=PROMPT, llm=llm, max_revisions=1).invoke("Would a home battery pay off for me?")
+    assert not r["verification"]["passed"]
+    assert any("calculate_energy_savings" in i for i in r["verification"]["issues"])
+
+
+def test_recent_question_requires_recent_summary(scripted):
+    summary = AIMessage(content="", tool_calls=[tool_call("get_recent_energy_summary", {"hours": 24}, "r1")])
+    llm = scripted(_tips_call(), "Fine (source: tip_ev_charging_strategies.txt).",
+                   summary, "Used 30 kWh in the last 24 hours (source: tip_ev_charging_strategies.txt).")
+    r = Agent(instructions=PROMPT, llm=llm).invoke("How has my home been doing over the last 24 hours?")
+    assert [t["tool"] for t in r["tool_log"]] == ["search_energy_tips", "get_recent_energy_summary"]
+    assert r["tool_log"][1]["output"]["balance"]["self_sufficiency_pct"] is not None
+    assert r["verification"]["passed"]
+
+
+def test_rules_do_not_fire_on_unrelated_questions(scripted):
+    llm = scripted(_tips_call(), "Charge overnight (source: tip_ev_charging_strategies.txt).")
+    r = Agent(instructions=PROMPT, llm=llm).invoke("When should I charge my car tomorrow?")
+    assert r["revisions"] == 0 and r["verification"]["passed"]
+
+
+def test_past_period_questions_require_database_tools(scripted):
+    usage = AIMessage(content="", tool_calls=[
+        tool_call("query_energy_usage", {"start_date": "yesterday", "end_date": "yesterday"}, "u1"),
+        tool_call("query_solar_generation", {"start_date": "yesterday", "end_date": "yesterday"}, "g1")])
+    llm = scripted(_tips_call(), "Yesterday was fine (source: tip_ev_charging_strategies.txt).",
+                   usage, "Yesterday: 33 kWh used, 28 kWh solar (source: tip_ev_charging_strategies.txt).")
+    r = Agent(instructions=PROMPT, llm=llm).invoke("How did my home do yesterday? Consumption, solar production and cost.")
+    critique = next(m for m in r["messages"] if m.type == "human" and "quality check" in m.content)
+    assert "query_energy_usage" in critique.content and "query_solar_generation" in critique.content
+    assert {"query_energy_usage", "query_solar_generation"} <= {t["tool"] for t in r["tool_log"]}
+    assert r["verification"]["passed"]
+
+
+def test_rule_patterns_match_intended_questions_only():
+    from agent import REQUIRED_TOOL_RULES
+    def rules(q):
+        return {t for p, t, _ in REQUIRED_TOOL_RULES if p.search(q)}
+    assert rules("How much did my solar panels produce over the last week?") == {"query_solar_generation"}
+    assert rules("How much can I save by running my dishwasher off-peak?") == {"calculate_energy_savings"}
+    assert rules("How has my home been doing over the last 24 hours?") == {"get_recent_energy_summary"}
+    assert rules("When should I charge my EV tomorrow?") == set()
+    assert rules("How much electricity will my home use tomorrow?") == set()
