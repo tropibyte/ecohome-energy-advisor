@@ -170,11 +170,17 @@ def vectorstore_is_current(persist_directory: Path = None, documents_dir: Path =
 
 def build_vectorstore(persist_directory: Path = None, documents_dir: Path = None):
     """(Re)build the Chroma collection from every document on disk."""
+    documents = load_documents(documents_dir)
+    splits = split_documents(documents)
+    store = create_vectorstore(splits, persist_directory, documents_dir)
+    return store, len(documents), len(splits)
+
+
+def create_vectorstore(splits: List[Document], persist_directory: Path = None, documents_dir: Path = None):
+    """Embed the chunks into a fresh Chroma collection and write the manifest of document hashes."""
     from langchain_chroma import Chroma
     persist_directory = Path(persist_directory or config.VECTORSTORE_DIR)
     persist_directory.mkdir(parents=True, exist_ok=True)
-    documents = load_documents(documents_dir)
-    splits = split_documents(documents)
     embeddings = get_embeddings()
     store = Chroma(collection_name=COLLECTION_NAME, embedding_function=embeddings,
                    persist_directory=str(persist_directory))
@@ -188,15 +194,20 @@ def build_vectorstore(persist_directory: Path = None, documents_dir: Path = None
         "chunks": len(splits),
     }, indent=2))
     _cache.clear()
-    return store, len(documents), len(splits)
+    _cache[str(persist_directory)] = store
+    return store
 
 
 def load_vectorstore(persist_directory: Path = None):
+    """Reopen the persisted collection (cached per directory within the process)."""
     from langchain_chroma import Chroma
     persist_directory = Path(persist_directory or config.VECTORSTORE_DIR)
-    return Chroma(collection_name=COLLECTION_NAME, embedding_function=get_embeddings(),
+    if str(persist_directory) in _cache:
+        return _cache[str(persist_directory)]
+    _cache[str(persist_directory)] = store = Chroma(collection_name=COLLECTION_NAME, embedding_function=get_embeddings(),
                   persist_directory=str(persist_directory),
                   collection_metadata={"hnsw:space": "cosine"})
+    return store
 
 
 def get_vectorstore(persist_directory: Path = None, documents_dir: Path = None) -> Tuple[object, str]:
@@ -233,9 +244,12 @@ def _bm25_index(store, key: str):
 
 
 def hybrid_search(query: str, k: int = 5, persist_directory: Path = None,
-                  documents_dir: Path = None) -> Dict[str, object]:
+                  documents_dir: Path = None, store=None) -> Dict[str, object]:
     persist_directory = Path(persist_directory or config.VECTORSTORE_DIR)
-    store, how = get_vectorstore(persist_directory, documents_dir)
+    if store is None:
+        store, how = get_vectorstore(persist_directory, documents_dir)
+    else:
+        how = "supplied by caller"
     fetch_k = max(12, 3 * k)
 
     # Dense ranking.

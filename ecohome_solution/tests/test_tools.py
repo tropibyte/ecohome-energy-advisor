@@ -222,3 +222,25 @@ def test_every_tool_has_docstring_and_returns_errors_not_exceptions():
     for t in tools.TOOL_KIT:
         assert t.description and len(t.description) > 40, t.name
     assert "error" in tools.query_energy_usage.invoke({"start_date": "bad", "end_date": "worse"})
+
+
+def test_analyze_usage_patterns_separates_individual_appliances():
+    r = tools.analyze_usage_patterns.invoke({"days": 30})
+    names = r["devices"]["appliance"]["by_device_name"]
+    assert set(names) == {"Dishwasher", "Washing Machine", "Dryer"}
+    total = r["devices"]["appliance"]["consumption_kwh"]
+    assert abs(sum(n["consumption_kwh"] for n in names.values()) - total) < 0.3
+    assert names["Dishwasher"]["average_daily_kwh"] < 1.5  # ~1.2 kWh per cycle, not the 3 kWh category total
+    appliance_opps = [o for o in r["top_opportunities"] if o["device_type"] == "appliance"]
+    assert appliance_opps and all("device_name" in o for o in appliance_opps)
+    only_dw = tools.analyze_usage_patterns.invoke({"days": 30, "device_type": "dishwasher"})
+    assert only_dw["total_consumption_kwh"] == names["Dishwasher"]["consumption_kwh"]
+
+
+def test_search_tool_builds_then_loads_index(tmp_path, monkeypatch):
+    import config
+    monkeypatch.setattr(config, "VECTORSTORE_DIR", tmp_path / "fresh_store")
+    first = tools.search_energy_tips.invoke({"query": "pool pump hours", "max_results": 2})
+    second = tools.search_energy_tips.invoke({"query": "pool pump hours", "max_results": 2})
+    assert first["index_status"] == "built" and second["index_status"] == "loaded"
+    assert first["tips"][0]["source"] == second["tips"][0]["source"]

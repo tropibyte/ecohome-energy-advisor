@@ -98,7 +98,7 @@ default (`Agent(model=...)` or `ECOHOME_CHAT_MODEL` overrides it).
 | `get_recent_energy_summary` | Last N hours | Adds net balance, solar self-consumption and self-sufficiency |
 | `calculate_energy_savings` | $, kWh, CO2, payback and ROI | Handles both efficiency and **load shifting** (different before/after prices); backward compatible |
 | `optimize_device_schedule` | Cheapest start time for a flexible load | Scores every feasible window on prices plus the solar forecast; supports deadlines that wrap midnight; reports the unconstrained best window and savings vs. current habit |
-| `analyze_usage_patterns` | Ranked savings opportunities from the household's own history | Per-device on-peak share and typical hours; solar self-consumption; $/month per opportunity |
+| `analyze_usage_patterns` | Ranked savings opportunities from the household's own history | Per-device on-peak share and typical hours, with individual appliances (Dishwasher / Washing Machine / Dryer) broken out; solar self-consumption; $/month per opportunity |
 | `predict_energy_usage` | ML forecast of a day's consumption and cost | Gradient boosting per device, weather-aware, hold-out validated |
 | `get_user_preferences` / `update_user_preference` | Personalisation | Profile and learned preferences in SQLite |
 
@@ -178,22 +178,28 @@ Final run on 26 Sep 2026: agent `gpt-4.1-mini`, judge `gpt-4o`, 16 test cases, l
 |---|---|
 | Overall score (0.6 x response + 0.4 x tools) | **0.928** |
 | Tests passed | **15 / 16** |
-| Response quality: accuracy / relevance / completeness / usefulness / clarity | 8.9 / 9.8 / 8.6 / 9.1 / 9.2 (out of 10) |
-| Tool appropriateness / completeness / success rate | 0.98 / 0.94 / 1.00 |
-| Stated $/kWh/°F/% figures traced to tool outputs | 94% |
+| Response quality: accuracy / relevance / completeness / usefulness / clarity | 8.9 / 9.8 / 8.8 / 9.0 / 9.3 (out of 10; lowest single score 7) |
+| Tool appropriateness / completeness / success rate | 0.97 / 0.91 / 1.00 |
+| Stated $/kWh/°F/% figures traced to tool outputs | 92% |
 | Answers citing a knowledge-base file | 94% |
-| Mean latency / mean tool calls per question | 12.8 s / 4.2 |
+| Mean latency / mean tool calls per question | 13.1 s / 3.5 |
 
-**The one failure** is `dishwasher_offpeak` (0.71): the agent skipped the savings calculator and misstated a daily
-figure. The report lists it under weaknesses, with the fix recommended by the tool-completeness metric.
+**The one failure** is `battery_roi` (0.76). The answer itself scored well (accuracy 9), but the agent skipped
+`calculate_energy_savings` for the payback figure, so tool completeness fell below the pass bar. It also failed in
+one of the two earlier full runs, so it is a real, recurring weakness rather than noise, and the report lists it with
+a recommended fix.
 
 **What the evaluation changed along the way:**
-- An earlier run exposed a crash: the ML tool returned `numpy.float64`, which the checkpointer cannot serialise.
-  It is now fixed, with a regression test.
-- The same run showed `battery_roi` pricing the battery on Saturday rates. It passed this time, but results vary
-  run to run.
-- Live smoke tests showed gpt-4o-mini inventing citations, which led to the `verify` node and the switch to
-  gpt-4.1-mini.
+- **Dishwasher question.** An earlier run failed `dishwasher_offpeak` (accuracy 5). The cause was partly the tool:
+  `analyze_usage_patterns` lumped the dishwasher, washer and dryer together as "appliance", so the agent quoted the
+  combined 3 kWh/day and $224/yr as the dishwasher's. The tool now breaks out each appliance, and a prompt rule
+  requires per-cycle and per-year figures. The test now passes at 0.95.
+- **ML tool crash.** Another run crashed on the ML question: the tool returned `numpy.float64`, which the
+  checkpointer cannot serialise. It is fixed, with a regression test.
+- **Invented citations.** Live smoke tests showed gpt-4o-mini inventing citations, which led to the `verify` node
+  and the switch to gpt-4.1-mini.
+- **Run-to-run variation.** Across the three full runs, the overall score was 0.89, 0.93 and 0.93. LLM output
+  varies between runs; the tool metrics and objective checks are deterministic for a given answer.
 
 Full details are in [`reports/evaluation_report.md`](reports/evaluation_report.md), the per-test log in
 `reports/test_results.json`, and the charts in `reports/figures/`.
@@ -232,6 +238,12 @@ weather API.
 Run the notebooks in order with the `ecohome` kernel: `01_db_setup` → `02_rag_setup` → `03_run_and_evaluate`.
 Notebook 03 makes about 16 agent runs plus 16 judge calls, which takes around 10 minutes.
 
+> **About the saved outputs.** Every notebook output in this repository came from the Udacity Vocareum OpenAI
+> gateway (`gpt-4.1-mini` agent, `gpt-4o` judge, `text-embedding-3-small` embeddings). The committed notebooks,
+> database, vector store and reports can be read without any key. Re-running notebook 02 or 03 needs a `.env`
+> created from `.env.example` with a valid key; the `.env` used here is git-ignored. Without a key, the offline test
+> suite still runs, and notebook 01 still runs (weather needs no key).
+
 **Tests** (offline: no API key or network needed; they use a scripted chat model, mock weather and hashing embeddings):
 
 ```powershell
@@ -239,7 +251,7 @@ cd ecohome_solution
 ..\.venv\Scripts\python.exe -m pytest -q
 ```
 
-The 43 tests cover the energy model, every tool, the RAG index (including rebuild on new documents), and the agent
+The 45 tests cover the energy model, every tool, the RAG index (including rebuild on new documents), and the agent
 graph: the tool loop, error recovery, retries, the iteration budget, multi-turn memory and the quality gate.
 
 ---
@@ -317,7 +329,7 @@ ecohome_solution/
 │   ├── energy_data.db          # SQLite database (created by notebook 01)
 │   └── vectorstore/            # Chroma index + manifest (created by notebook 02)
 ├── reports/                    # evaluation report (md/json), test_results.json, figures/
-├── tests/                      # 43 offline pytest tests
+├── tests/                      # 45 offline pytest tests
 ├── requirements.txt            # pinned direct dependencies
 ├── requirements-lock.txt       # full pip freeze
 └── .env.example

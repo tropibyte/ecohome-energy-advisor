@@ -474,20 +474,29 @@ def search_energy_tips(query: str, max_results: int = 5) -> Dict[str, Any]:
         if not os.path.exists(persist_directory):
             os.makedirs(persist_directory)
 
-        # 2. Load and split documents if the vector store doesn't exist (or the documents changed),
-        # 3. else load the existing vector store.
-        #    rag.get_vectorstore() implements both branches: build_vectorstore() loads every file in
-        #    data/documents, splits it with contextual headers and embeds it into Chroma;
-        #    load_vectorstore() reopens the persisted collection.
-        # 4. Search for relevant documents (hybrid dense + BM25 with RRF and diversity re-ranking)
-        search = rag.hybrid_search(query, k=max_results, persist_directory=persist_directory)
+        if not rag.vectorstore_is_current(persist_directory):
+            # 2. Load and split documents if the vector store doesn't exist (or a document was added or
+            #    changed since it was built): every file in data/documents is loaded, split on section
+            #    boundaries with contextual headers, embedded and persisted to Chroma.
+            existed = os.path.exists(os.path.join(persist_directory, "chroma.sqlite3"))
+            documents = rag.load_documents()
+            splits = rag.split_documents(documents)
+            vectorstore = rag.create_vectorstore(splits, persist_directory)
+            index_status = "rebuilt" if existed else "built"
+        else:
+            # 3. Else load the existing vector store.
+            vectorstore = rag.load_vectorstore(persist_directory)
+            index_status = "loaded"
+
+        # 4. Search for relevant documents (hybrid dense + BM25 with weighted RRF and diversity re-ranking)
+        search = rag.hybrid_search(query, k=max_results, persist_directory=persist_directory, store=vectorstore)
 
         # 5. Return a results dict
         results = {
             "query": query,
             "total_results": len(search["results"]),
             "search_method": "hybrid (dense embeddings + BM25, reciprocal rank fusion, per-source diversity)",
-            "index_status": search["index_status"],
+            "index_status": index_status,
             "tips": []
         }
         for i, hit in enumerate(search["results"]):
@@ -757,7 +766,8 @@ def analyze_usage_patterns(days: int = 30, device_type: Optional[str] = None) ->
 
     Args:
         days (int): Look-back window in days (default 30)
-        device_type (str): Optional filter (EV, HVAC, appliance, pool_pump, water_heater, base_load)
+        device_type (str): Optional filter: a type (EV, HVAC, appliance, pool_pump, water_heater, base_load)
+            or a single device name such as "dishwasher", "dryer" or "washing machine"
 
     Returns:
         Dict[str, Any]: per-device statistics, solar self-consumption, and ranked opportunities
@@ -774,15 +784,22 @@ def analyze_usage_patterns(days: int = 30, device_type: Optional[str] = None) ->
         total_cost = sum(r.cost_usd or 0 for r in usage)
 
         stats: Dict[str, Dict[str, Any]] = {}
+        name_stats: Dict[str, Dict[str, Dict[str, Any]]] = defaultdict(dict)
         hours_hist: Dict[str, Counter] = defaultdict(Counter)
+        name_hours: Dict[str, Counter] = defaultdict(Counter)
         for r in usage:
-            s = stats.setdefault(r.device_type, {"kwh": 0.0, "cost": 0.0, "peak_kwh": 0.0, "peak_cost": 0.0})
-            s["kwh"] += r.consumption_kwh
-            s["cost"] += r.cost_usd or 0
-            if tou_period(r.timestamp.hour, r.timestamp.date()) in ("on_peak", "critical_peak"):
-                s["peak_kwh"] += r.consumption_kwh
-                s["peak_cost"] += r.cost_usd or 0
+            peak = tou_period(r.timestamp.hour, r.timestamp.date()) in ("on_peak", "critical_peak")
+            name = r.device_name or r.device_type
+            for s in (stats.setdefault(r.device_type, {"kwh": 0.0, "cost": 0.0, "peak_kwh": 0.0, "peak_cost": 0.0}),
+                      name_stats[r.device_type].setdefault(name, {"kwh": 0.0, "cost": 0.0, "peak_kwh": 0.0,
+                                                                  "peak_cost": 0.0})):
+                s["kwh"] += r.consumption_kwh
+                s["cost"] += r.cost_usd or 0
+                if peak:
+                    s["peak_kwh"] += r.consumption_kwh
+                    s["peak_cost"] += r.cost_usd or 0
             hours_hist[r.device_type][r.timestamp.hour] += r.consumption_kwh
+            name_hours[name][r.timestamp.hour] += r.consumption_kwh
 
         off_rate = TARIFF["periods"]["off_peak"]["rate"]
         solar_rate = TARIFF["periods"]["solar_midday"]["rate"]
@@ -800,7 +817,31 @@ def analyze_usage_patterns(days: int = 30, device_type: Optional[str] = None) ->
                 "typical_hours": [h for h, _ in hours_hist[dev].most_common(4)],
                 "shiftable": dev in _SHIFTABLE,
             }
-            if dev in _SHIFTABLE and s["kwh"] > 0:
+            # Individual devices inside the category (appliance = Dishwasher + Washing Machine + Dryer),
+            # so figures for one device are never read off the category total.
+            if len(name_stats[dev]) > 1:
+                devices[dev]["by_device_name"] = {
+                    n: {"consumption_kwh": round(ns["kwh"], 1), "cost_usd": round(ns["cost"], 2),
+                        "average_daily_kwh": round(ns["kwh"] / days, 2),
+                        "average_rate_paid": round(ns["cost"] / ns["kwh"], 4) if ns["kwh"] else 0,
+                        "on_peak_share_pct": round(100 * ns["peak_kwh"] / ns["kwh"], 1) if ns["kwh"] else 0,
+                        "typical_hours": [h for h, _ in name_hours[n].most_common(3)]}
+                    for n, ns in sorted(name_stats[dev].items(), key=lambda kv: -kv[1]["cost"])}
+            if dev == "appliance":
+                # One opportunity per named appliance: "the dishwasher saves $X" must mean the dishwasher only.
+                for n, ns in name_stats[dev].items():
+                    monthly = (ns["cost"] - ns["kwh"] * off_rate) * 30 / days
+                    if monthly > 0.5:
+                        opportunities.append({
+                            "device_type": dev, "device_name": n,
+                            "action": f"Delay-start the {n.lower()} to after 22:00, or run it 10:00-15:00 on solar days.",
+                            "current_average_rate": round(ns["cost"] / ns["kwh"], 4), "target_rate": off_rate,
+                            "kwh_per_month": round(ns["kwh"] * 30 / days, 1),
+                            "on_peak_kwh_per_month": round(ns["peak_kwh"] * 30 / days, 1),
+                            "estimated_monthly_savings_usd": round(monthly, 2),
+                            "estimated_annual_savings_usd": round(monthly * 12, 2),
+                        })
+            elif dev in _SHIFTABLE and s["kwh"] > 0:
                 target = solar_rate if dev == "pool_pump" else off_rate
                 monthly = (s["cost"] - s["kwh"] * target) * 30 / days
                 if monthly > 0.5:
@@ -809,8 +850,6 @@ def analyze_usage_patterns(days: int = 30, device_type: Optional[str] = None) ->
                         "action": {
                             "EV": "Schedule EV charging to start after 22:00 (or 10:00-15:00 on sunny weekend days) "
                                   "instead of plugging in on arrival.",
-                            "appliance": "Delay-start the dishwasher and laundry to after 22:00, or run them "
-                                         "10:00-15:00 on solar days.",
                             "pool_pump": "Move the pool pump to 09:00-15:00 so it runs on solar instead of into the "
                                          "16:00 peak.",
                             "water_heater": "Pre-heat the heat-pump water heater midday and avoid evening "
