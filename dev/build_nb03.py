@@ -769,6 +769,60 @@ def generate_evaluation_report(test_results=None, evaluation_results=None, pass_
         reason = "; ".join(ev["response_evaluation"]["weaknesses"][:2] + ev["tool_evaluation"]["missing_tools"][:1])
         weaknesses.append(f"FAILED {row['test_id']} (score {row['combined_score']:.2f}): {reason}")
 
+    # ---- relative weaknesses: always reported, even when every test passes ------------------------------
+    # Passing thresholds says the agent is good enough; these say where it is least good, with evidence.
+    ev_by_id = {e["test_id"]: e for e in evaluation_results}
+    weakest_metric = min(metric_summary, key=lambda m: metric_summary[m]["mean"])
+    low = df.nsmallest(3, weakest_metric)
+    weaknesses.append(
+        f"Relative: {weakest_metric} is the lowest response metric ({metric_summary[weakest_metric]['mean']}/10). "
+        f"Lowest: " + ", ".join(f"{r.test_id} ({getattr(r, weakest_metric)})" for r in low.itertuples()) + ". "
+        f"Judge on {low.iloc[0]['test_id']}: {ev_by_id[low.iloc[0]['test_id']]['response_evaluation']['feedback'][weakest_metric]}")
+    weakest_tool_metric = min(tool_summary, key=tool_summary.get)
+    if tool_summary[weakest_tool_metric] < 1.0:
+        detail = {"tool_appropriateness": "unnecessary_tools", "tool_completeness": "missing_tools",
+                  "efficiency": "duplicate_calls"}.get(weakest_tool_metric)
+        cases = [f"{e['test_id']}: {e['tool_evaluation'][detail]}" for e in evaluation_results
+                 if detail and e["tool_evaluation"][detail]]
+        weaknesses.append(f"Relative: {weakest_tool_metric.replace('_', ' ')} is the lowest tool metric "
+                          f"({tool_summary[weakest_tool_metric]:.0%})" + (f"; {'; '.join(cases[:3])}." if cases else "."))
+    for r in df.nsmallest(2, "combined_score").itertuples():
+        judge_weak = ev_by_id[r.test_id]["response_evaluation"]["weaknesses"]
+        weaknesses.append(f"Relative: {r.test_id} is among the two lowest-scoring tests ({r.combined_score:.2f})"
+                          + (f": {judge_weak[0]}" if judge_weak else "."))
+    revised = [r for r in test_results if r.get("revisions")]
+    if revised:
+        reasons = Counter()
+        for r in revised:
+            for d in r.get("decisions", []):
+                if d["node"] == "verify" and d["detail"].startswith("revision requested"):
+                    text = d["detail"]
+                    for key, label in (("knowledge base", "no knowledge-base search"),
+                                       ("did not return", "unverifiable citation"),
+                                       ("calculate_energy_savings", "savings figure without the calculator"),
+                                       ("get_recent_energy_summary", "recent question without the summary tool"),
+                                       ("query_energy_usage", "past-period usage without the usage query"),
+                                       ("query_solar_generation", "past-period solar without the solar query")):
+                        if key in text:
+                            reasons[label] += 1
+        weaknesses.append(f"Relative: {len(revised)}/{len(test_results)} first drafts were sent back by the quality "
+                          f"gate before release ({dict(reasons.most_common())}). The final answers passed, but the "
+                          "model does not yet follow these rules unprompted, which costs an extra LLM call each time.")
+    ungrounded = df[df["grounding_ratio"].notna() & (df["grounding_ratio"] < 1)]
+    if len(ungrounded):
+        weaknesses.append("Relative: some stated figures could not be traced to a tool output in "
+                          + ", ".join(f"{r.test_id} ({r.grounding_ratio:.0%} grounded)"
+                                      for r in ungrounded.nsmallest(3, "grounding_ratio").itertuples())
+                          + " (these may be derived by arithmetic, but they cannot be verified automatically).")
+    uncited = df[~df["cites_kb"] & (df["category"] != "Out of scope / guardrails")]["test_id"].tolist()
+    if uncited:
+        weaknesses.append(f"Relative: no knowledge-base citation in {uncited}.")
+    if overall["p90_latency_s"] and overall["p90_latency_s"] > 15:
+        slow = df.nlargest(2, "latency_s")
+        weaknesses.append(f"Relative: p90 latency is {overall['p90_latency_s']} s; slowest "
+                          + ", ".join(f"{r.test_id} ({r.latency_s} s, {r.tool_calls} tool calls)" for r in slow.itertuples())
+                          + ". Quality-gate revisions add a full LLM round-trip.")
+
     # ---- recommendations: rule-based from metrics + the judge's most frequent suggestions --------------
     recs = []
     if tool_summary["tool_completeness"] < 0.95:
@@ -788,6 +842,10 @@ def generate_evaluation_report(test_results=None, evaluation_results=None, pass_
     if overall["mean_latency_s"] and overall["mean_latency_s"] > 20:
         recs.append(f"Latency ({overall['mean_latency_s']} s mean): trim large tool payloads (hourly weather) or "
                     "summarise them before they reach the LLM.")
+    if revised:
+        recs.append(f"First-draft compliance: {len(revised)} answers needed a quality-gate revision. Move the most "
+                    "frequent rule into the question-type examples of the system prompt, or force the tool with "
+                    "tool_choice when the question pattern matches, to save the extra LLM round-trip.")
     judge_suggestions = Counter(s.strip().rstrip(".") for e in evaluation_results
                                 for s in e["response_evaluation"]["suggestions"])
     for s, _ in judge_suggestions.most_common(4):
@@ -808,7 +866,7 @@ def generate_evaluation_report(test_results=None, evaluation_results=None, pass_
         "tool_frequency": tool_freq.to_dict(),
         "per_test": df.to_dict(orient="records"),
         "strengths": strengths,
-        "weaknesses": weaknesses or ["No metric fell below its threshold."],
+        "weaknesses": weaknesses,
         "recommendations": recs,
         "tool_errors": tool_errors,
         "tool_coverage": tool_coverage(test_results),
@@ -821,6 +879,9 @@ def generate_evaluation_report(test_results=None, evaluation_results=None, pass_
     config.REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     (config.REPORTS_DIR / "evaluation_report.json").write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
     (config.REPORTS_DIR / "evaluation_report.md").write_text(report_to_markdown(report), encoding="utf-8")
+    # Per-test judge and tool evaluations, so the report can be regenerated without re-running the agent.
+    (config.REPORTS_DIR / "evaluation_results.json").write_text(json.dumps(evaluation_results, indent=1, default=str),
+                                                                encoding="utf-8")
     return report
 
 
@@ -1074,6 +1135,13 @@ The seven tools of the starter `TOOL_KIT` must each be demonstrated inside `test
 from the logged tool calls (it raises if any required tool never ran successfully) and prints each tool's result
 next to the recommendation it supported. It pays particular attention to `get_recent_energy_summary` and
 `calculate_energy_savings`, which the `verify` node now requires for recent-performance and savings questions.
+
+**Read `revisions: 1` below as the gate working, not the prompt failing.** In most runs the model's *first draft*
+still skips a required tool (usually `search_energy_tips`, sometimes the savings or summary tool). The `verify` node
+detects that, sends the draft back with the specific missing tool, and releases the answer only once the tool has
+run. This is the routing/verification fix the review asked for: compliance is guaranteed by the graph, not by hoping
+the prompt is followed. The report's *Weaknesses* section counts these first-draft misses, because each one costs an
+extra LLM call.
 """),
 code("""
 # The seven tools of the starter TOOL_KIT, which every submission must demonstrate in test_results.

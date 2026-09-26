@@ -164,9 +164,16 @@ a Tesla Model 3, a heat pump, a pool pump and a heat-pump water heater, about 34
 `generate_evaluation_report()` then `display_evaluation_report()`
 - Overall score (0.6 response + 0.4 tools), pass rate, per-metric mean/min/max, per-category and per-test tables,
   latency, tool frequency and error count.
-- Strengths, weaknesses (including every failed test and why) and prioritised recommendations, derived from the metrics
-  plus the judge's most frequent suggestions.
-- Saved to `reports/evaluation_report.json` and `.md`, with charts in `reports/figures/`.
+- Strengths, weaknesses and prioritised recommendations, derived from the metrics plus the judge's most frequent
+  suggestions. Weaknesses come in two kinds:
+  - **Threshold failures**: failed tests and metrics below their bars.
+  - **Relative weaknesses**, reported **even when every test passes**: the lowest response and tool metrics with the
+    tests that pulled them down, the two lowest-scoring tests with the judge's reason, how many first drafts the
+    quality gate sent back and why, figures that could not be traced to a tool output, uncited answers, and the
+    slowest tests.
+- Saved to `reports/evaluation_report.json` and `.md`, with charts in `reports/figures/`. The per-test judge and tool
+  evaluations are saved to `reports/evaluation_results.json`, so the report can be regenerated without re-running
+  the agent.
 
 ---
 
@@ -176,14 +183,14 @@ Final run after the first project review: agent `gpt-4.1-mini`, judge `gpt-4o`, 
 
 | Metric | Value |
 |---|---|
-| Overall score (0.6 x response + 0.4 x tools) | **0.948** |
+| Overall score (0.6 x response + 0.4 x tools) | **0.954** |
 | Tests passed | **18 / 18** |
 | Required tools exercised in `test_results` | **7 / 7** (§3b and the report's *Tool coverage* table) |
-| Response quality: accuracy / relevance / completeness / usefulness / clarity | 9.2 / 9.9 / 8.9 / 9.2 / 9.4 (out of 10; lowest single score 7) |
-| Tool appropriateness / completeness / success rate | 0.96 / 1.00 / 1.00 |
+| Response quality: accuracy / relevance / completeness / usefulness / clarity | 9.4 / 9.9 / 9.0 / 9.5 / 9.4 (out of 10; lowest single score 7) |
+| Tool appropriateness / completeness / success rate | 0.99 / 0.94 / 1.00 |
 | Stated $/kWh/°F/% figures traced to tool outputs | 95% |
 | Answers citing a knowledge-base file | 94% |
-| Mean latency / mean tool calls per question | 13.6 s / 4.6 |
+| Mean latency / mean tool calls per question | 14.1 s / 4.1 |
 
 **Response to the first review** (it asked for all seven tools to be demonstrated, and for savings answers to call the
 savings tools):
@@ -200,10 +207,16 @@ savings tools):
 - **Calculator arguments.** `calculate_energy_savings` gained worked examples (appliance load shift, home battery). A
   smoke test had shown the model pricing a battery as extra consumption (`current_usage_kwh=0`).
 
+**Weaknesses are always reported.** Even with 18/18 passing, the report lists the relative weak spots. The current
+run shows three:
+- 15 of 18 first drafts were sent back by the quality gate, almost always for skipping the knowledge-base search.
+- `pool_pump_week` is the lowest-scoring test (16 tool calls, no cloudy-day adjustments).
+- `personalization_departure` answered correctly but did not save the new departure time.
+
 **Earlier fixes found by the evaluation:** the dishwasher advice used the combined appliance total (the tool now
 breaks out each appliance); a `numpy.float64` crashed the checkpointer (fixed, with a regression test);
 gpt-4o-mini invented citations (hence the citation gate and the switch to gpt-4.1-mini). Across the full runs the
-overall score was 0.89, 0.93, 0.93 and now 0.95.
+overall score was 0.89, 0.93, 0.93, 0.95 and now 0.95.
 
 Full details are in [`reports/evaluation_report.md`](reports/evaluation_report.md), the per-test log in
 `reports/test_results.json`, and the charts in `reports/figures/`.
@@ -332,7 +345,7 @@ ecohome_solution/
 │   ├── documents/              # 11 knowledge-base documents
 │   ├── energy_data.db          # SQLite database (created by notebook 01)
 │   └── vectorstore/            # Chroma index + manifest (created by notebook 02)
-├── reports/                    # evaluation report (md/json), test_results.json, figures/
+├── reports/                    # evaluation report (md/json), test_results.json, evaluation_results.json, figures/
 ├── tests/                      # 51 offline pytest tests
 ├── requirements.txt            # pinned direct dependencies
 ├── requirements-lock.txt       # full pip freeze

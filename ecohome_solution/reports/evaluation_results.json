@@ -1,0 +1,1208 @@
+[
+ {
+  "test_id": "ev_charging_1",
+  "category": "EV charging optimization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 10,
+    "usefulness": 10,
+    "clarity": 9
+   },
+   "overall_score": 1.0,
+   "feedback": {
+    "accuracy": "The response accurately uses the tool evidence to recommend charging times and rates, with no fabricated numbers.",
+    "relevance": "The response directly answers the question about when to charge the electric car to minimize cost and maximize solar power.",
+    "completeness": "The response covers all expected elements: time recommendation, cost analysis, and solar consideration.",
+    "usefulness": "The response provides specific, actionable advice with exact times and cost savings, personalized to the household's solar setup.",
+    "clarity": "The response is well-organized and concise, though slightly more concise phrasing could enhance clarity."
+   },
+   "strengths": [
+    "Accurate use of tool evidence for time and cost recommendations.",
+    "Comprehensive coverage of expected response criteria.",
+    "Actionable and personalized advice with clear cost savings."
+   ],
+   "weaknesses": [],
+   "suggestions": [
+    "Consider slightly more concise phrasing to enhance clarity further."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 11,
+    "grounded_claims": 11,
+    "grounding_ratio": 1.0,
+    "word_count": 337
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_electricity_prices",
+    "get_weather_forecast",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "ev_charging_deadline",
+  "category": "EV charging optimization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 10,
+    "usefulness": 10,
+    "clarity": 10
+   },
+   "overall_score": 1.0,
+   "feedback": {
+    "accuracy": "The response accurately identifies the off-peak window and calculates the cost using the correct rate from the tool evidence.",
+    "relevance": "The response directly answers the question about the cheapest charging window and cost.",
+    "completeness": "The response covers all expected elements, including the charging window, cost, and savings.",
+    "usefulness": "The response provides actionable advice with specific times and cost savings, tailored to the user's needs.",
+    "clarity": "The response is well-organized, concise, and presents the decision first, followed by supporting details."
+   },
+   "strengths": [
+    "Accurate calculation of charging cost using the correct off-peak rate.",
+    "Clear and actionable recommendation for the charging window.",
+    "Provides additional savings information and tips for future charging."
+   ],
+   "weaknesses": [],
+   "suggestions": [],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 9,
+    "grounded_claims": 9,
+    "grounding_ratio": 1.0,
+    "word_count": 222
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_electricity_prices",
+    "get_weather_forecast",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "thermostat_price_spike",
+  "category": "Thermostat settings",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 10
+   },
+   "overall_score": 0.975,
+   "feedback": {
+    "accuracy": "The response accurately uses the tool evidence, referencing the correct on-peak rate of $0.527/kWh and the solar production forecast. The pre-cooling energy need of 4.5 kWh is consistent with the evidence.",
+    "relevance": "The response directly answers the question by providing specific thermostat setpoints for Wednesday afternoon when electricity prices spike.",
+    "completeness": "The response covers all expected elements, including specific setpoints, price references, and solar forecast. However, it could mention the exact forecast temperature for completeness.",
+    "usefulness": "The response provides actionable advice with specific setpoints and times, making it easy for a customer to implement immediately.",
+    "clarity": "The response is well-organized, concise, and follows a decision-first structure, making it easy to understand and follow."
+   },
+   "strengths": [
+    "Accurate use of tool evidence for pricing and solar forecast.",
+    "Provides specific, actionable thermostat setpoints and times.",
+    "Includes additional tips for maximizing energy efficiency."
+   ],
+   "weaknesses": [],
+   "suggestions": [
+    "Consider mentioning the exact forecast temperature for added completeness."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 19,
+    "grounded_claims": 19,
+    "grounding_ratio": 1.0,
+    "word_count": 299
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_electricity_prices",
+    "get_weather_forecast",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "thermostat_heat_precool",
+  "category": "Thermostat settings",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 9
+   },
+   "overall_score": 0.945,
+   "feedback": {
+    "accuracy": "The response accurately uses the forecast data and pricing information to recommend a pre-cooling strategy. The numbers align with the tool evidence, though the exact savings calculation could be more detailed.",
+    "relevance": "The response directly addresses the question by providing a specific pre-cooling plan and setpoints for the evening.",
+    "completeness": "The response covers all expected elements, including a time-based plan, setpoints, and savings. However, it could mention the exact solar output during the pre-cooling hours.",
+    "usefulness": "The advice is actionable, with specific times and setpoints, and includes cost savings and environmental benefits.",
+    "clarity": "The response is well-structured and concise, with a clear plan and rationale. It could be slightly more concise in the savings explanation."
+   },
+   "strengths": [
+    "Provides a clear and actionable pre-cooling plan.",
+    "Includes specific setpoints and times for energy efficiency.",
+    "Offers detailed cost savings and environmental impact information."
+   ],
+   "weaknesses": [
+    "Could include more detail on solar output during pre-cooling hours."
+   ],
+   "suggestions": [
+    "Include specific solar output data for the pre-cooling hours to enhance completeness.",
+    "Simplify the savings explanation for better clarity."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 20,
+    "grounded_claims": 19,
+    "grounding_ratio": 0.95,
+    "word_count": 277
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_weather_forecast",
+    "get_electricity_prices",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "dishwasher_offpeak",
+  "category": "Appliance scheduling",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 10
+   },
+   "overall_score": 0.945,
+   "feedback": {
+    "accuracy": "The response accurately calculates savings per cycle and annually, aligning with the tool evidence. However, it slightly underestimates the per-cycle savings, which should be closer to $0.35-0.40.",
+    "relevance": "The response directly addresses the question about savings from running the dishwasher during off-peak hours.",
+    "completeness": "The response covers most expected elements, including savings per cycle, annual savings, and recommended start times. It could improve by specifying the exact savings per cycle as $0.35-0.40.",
+    "usefulness": "The response provides actionable advice with specific times and savings figures, making it highly useful for the customer.",
+    "clarity": "The response is well-organized, concise, and presents the decision first, making it easy to understand."
+   },
+   "strengths": [
+    "Provides specific savings figures per cycle and annually.",
+    "Recommends exact times for running the dishwasher to maximize savings.",
+    "Includes environmental benefits, enhancing the response's appeal."
+   ],
+   "weaknesses": [
+    "Slight underestimation of per-cycle savings."
+   ],
+   "suggestions": [
+    "Adjust the per-cycle savings estimate to $0.35-0.40 for greater accuracy."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 8,
+    "grounded_claims": 8,
+    "grounding_ratio": 1.0,
+    "word_count": 229
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "analyze_usage_patterns",
+    "get_electricity_prices",
+    "calculate_energy_savings",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "laundry_weekend",
+  "category": "Appliance scheduling",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 9
+   },
+   "overall_score": 0.945,
+   "feedback": {
+    "accuracy": "The response accurately uses the tool evidence to recommend running laundry during solar midday hours. However, the specific kWh usage and cost savings calculations are not directly verifiable from the evidence provided.",
+    "relevance": "The response directly answers the question by providing specific times to run the laundry loads, aligning with the expected response criteria.",
+    "completeness": "The response covers most elements of the expected response criteria, including specific times and the rationale for solar usage. However, it does not explicitly mention cold-water washing or running loads back to back.",
+    "usefulness": "The response provides actionable advice with specific times and potential savings, making it highly useful for the user.",
+    "clarity": "The response is well-organized and concise, with a clear decision-first structure. However, the detailed savings calculations could be simplified for better clarity."
+   },
+   "strengths": [
+    "Provides specific times for running laundry loads.",
+    "Includes detailed cost savings and environmental impact.",
+    "Aligns recommendations with solar production and tariff data."
+   ],
+   "weaknesses": [
+    "Does not mention cold-water washing or running loads back to back."
+   ],
+   "suggestions": [
+    "Include a mention of cold-water washing to enhance energy savings.",
+    "Suggest running loads back to back to optimize energy use.",
+    "Simplify the savings calculations for better clarity."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 15,
+    "grounded_claims": 12,
+    "grounding_ratio": 0.8,
+    "word_count": 281
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_electricity_prices",
+    "get_weather_forecast",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 5,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "pool_pump_week",
+  "category": "Appliance scheduling",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 8,
+    "relevance": 9,
+    "completeness": 7,
+    "usefulness": 8,
+    "clarity": 9
+   },
+   "overall_score": 0.795,
+   "feedback": {
+    "accuracy": "The advisor's response is mostly accurate, aligning with the tool evidence. However, the mention of critical peak event days and specific electricity prices lacks direct evidence from the provided data.",
+    "relevance": "The response directly addresses the question by providing a specific time window for running the pool pump based on the weather forecast.",
+    "completeness": "The response covers most expected elements but lacks specific adjustments for cloudy days and a detailed comparison with the current schedule.",
+    "usefulness": "The advice is actionable and includes potential savings, but could be more personalized with exact savings calculations for the user's current schedule.",
+    "clarity": "The response is well-structured and concise, with a clear recommendation and supporting rationale."
+   },
+   "strengths": [
+    "Provides a clear and actionable recommendation for pool pump operation.",
+    "Includes potential savings and environmental benefits.",
+    "Well-structured with a logical flow of information."
+   ],
+   "weaknesses": [
+    "Lacks specific adjustments for cloudy days in the forecast.",
+    "Mentions critical peak event days without evidence from the tool data."
+   ],
+   "suggestions": [
+    "Include adjustments for cloudy days in the recommended schedule.",
+    "Provide evidence or remove references to critical peak event days and specific electricity prices.",
+    "Offer a more detailed comparison with the current schedule to highlight savings."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 10,
+    "grounded_claims": 10,
+    "grounding_ratio": 1.0,
+    "word_count": 299
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 0.1,
+   "argument_quality": 1.0,
+   "overall_tool_score": 0.865,
+   "tools_used": [
+    "get_weather_forecast",
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 16,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "16 tool calls exceeds the expected budget of 7.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "solar_self_consumption",
+  "category": "Solar power maximization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 9
+   },
+   "overall_score": 0.945,
+   "feedback": {
+    "accuracy": "The response accurately uses the tool evidence to quantify solar production and self-consumption/export. It correctly states the export value and potential savings from self-consumption. However, it could specify the exact export credit and retail rate for clarity.",
+    "relevance": "The response directly addresses the question by focusing on increasing self-consumption of solar power and reducing exports.",
+    "completeness": "The response covers most expected elements, including quantifying solar production, explaining export credit versus retail rate, and recommending load shifting. It could improve by detailing the exact export credit and retail rate.",
+    "usefulness": "The response provides specific, actionable advice with estimated savings, making it highly useful for the customer.",
+    "clarity": "The response is well-organized and concise, with a clear decision-first structure. It could be slightly improved by explicitly stating the export credit and retail rate."
+   },
+   "strengths": [
+    "Provides specific, actionable recommendations for shifting loads to increase solar self-consumption.",
+    "Quantifies potential savings from implementing the recommendations.",
+    "Uses tool evidence effectively to support the recommendations."
+   ],
+   "weaknesses": [
+    "Does not explicitly state the export credit and retail rate, which could enhance clarity."
+   ],
+   "suggestions": [
+    "Include the exact export credit and retail rate to enhance clarity and completeness.",
+    "Consider providing a brief explanation of how smart home automation can be set up for those unfamiliar with the technology."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 12,
+    "grounded_claims": 10,
+    "grounding_ratio": 0.83,
+    "word_count": 378
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "analyze_usage_patterns",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 2,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "usage_history_three_ways",
+  "category": "Usage analysis & personalization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 10,
+    "usefulness": 10,
+    "clarity": 9
+   },
+   "overall_score": 1.0,
+   "feedback": {
+    "accuracy": "The response accurately uses the tool evidence to provide specific numbers and savings estimates for each recommendation.",
+    "relevance": "The response directly answers the question by providing three specific ways to reduce energy use based on the user's usage history.",
+    "completeness": "The response covers all elements of the expected response criteria, providing three concrete suggestions with estimated savings.",
+    "usefulness": "The response is actionable and personalized, with specific times and savings figures that the user can implement immediately.",
+    "clarity": "The response is well-organized and concise, though the inclusion of additional tips could be more succinctly integrated."
+   },
+   "strengths": [
+    "Accurate use of tool evidence to provide specific savings estimates.",
+    "Directly addresses the user's question with relevant and actionable advice.",
+    "Well-organized structure with clear recommendations and rationale."
+   ],
+   "weaknesses": [
+    "The additional tips section could be more succinctly integrated into the main recommendations."
+   ],
+   "suggestions": [
+    "Integrate additional tips more seamlessly into the main recommendations to maintain focus.",
+    "Consider providing a brief summary of the overall impact of the recommendations at the end."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 12,
+    "grounded_claims": 11,
+    "grounding_ratio": 0.92,
+    "word_count": 308
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "analyze_usage_patterns",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 2,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "ev_shift_annual_savings",
+  "category": "Cost savings calculations",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 8,
+    "usefulness": 9,
+    "clarity": 9
+   },
+   "overall_score": 0.895,
+   "feedback": {
+    "accuracy": "The response accurately uses the provided tool evidence to calculate savings and CO2 impact. However, it assumes a consistent daily consumption without explicitly verifying it against the evidence.",
+    "relevance": "The response directly answers the question about savings from switching to overnight charging.",
+    "completeness": "The response covers most expected elements but lacks a detailed breakdown of the calculation process.",
+    "usefulness": "The response provides actionable steps and specific savings figures, making it highly useful for the user.",
+    "clarity": "The response is well-structured and concise, with a clear recommendation and supporting details."
+   },
+   "strengths": [
+    "Accurate calculation of savings and CO2 impact.",
+    "Clear and actionable recommendation for overnight charging.",
+    "Inclusion of tips for optimizing charging."
+   ],
+   "weaknesses": [
+    "Lacks a detailed breakdown of the savings calculation.",
+    "Assumes consistent daily consumption without explicit verification."
+   ],
+   "suggestions": [
+    "Include a step-by-step breakdown of the savings calculation.",
+    "Verify and mention the consistency of daily consumption against the evidence.",
+    "Provide a brief explanation of how CO2 savings are calculated."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 8,
+    "grounded_claims": 8,
+    "grounding_ratio": 1.0,
+    "word_count": 210
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_electricity_prices",
+    "get_electricity_prices",
+    "query_energy_usage",
+    "calculate_energy_savings",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 5,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "battery_roi",
+  "category": "Cost savings calculations",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 8,
+    "usefulness": 9,
+    "clarity": 9
+   },
+   "overall_score": 0.895,
+   "feedback": {
+    "accuracy": "The response accurately calculates the annual savings and payback period based on the provided data, but the savings estimate is slightly lower than the expected range.",
+    "relevance": "The response directly addresses the question about the payback period and savings of a 13.5 kWh battery.",
+    "completeness": "The response covers most expected elements but lacks detailed caveats about variability in solar exports and price spreads.",
+    "usefulness": "The response provides actionable advice on charging times and savings, though it could be more personalized to the household's specific solar export data.",
+    "clarity": "The response is well-structured and concise, with a clear recommendation and supporting details."
+   },
+   "strengths": [
+    "Accurate calculation of payback period and annual savings.",
+    "Clear recommendation on optimal charging times.",
+    "Inclusion of environmental benefits (CO2 savings)."
+   ],
+   "weaknesses": [
+    "Lacks detailed caveats about variability in solar exports and price spreads.",
+    "Savings estimate is slightly lower than the expected range."
+   ],
+   "suggestions": [
+    "Include more detailed caveats about variability in solar exports and price spreads.",
+    "Provide a more personalized analysis based on specific household solar export data.",
+    "Ensure savings estimates align more closely with expected ranges."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 12,
+    "grounded_claims": 10,
+    "grounding_ratio": 0.83,
+    "word_count": 258
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 0.833,
+   "tool_completeness": 0.5,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 0.767,
+   "tools_used": [
+    "query_energy_usage",
+    "get_electricity_prices",
+    "query_energy_usage",
+    "optimize_device_schedule",
+    "calculate_energy_savings",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 6,
+   "missing_tools": [
+    "analyze_usage_patterns or get_recent_energy_summary or query_solar_generation"
+   ],
+   "unnecessary_tools": [
+    "optimize_device_schedule"
+   ],
+   "duplicate_calls": [],
+   "feedback": [
+    "Missing expected tool(s): analyze_usage_patterns or get_recent_energy_summary or query_solar_generation.",
+    "Tools not needed for this question: optimize_device_schedule."
+   ]
+  }
+ },
+ {
+  "test_id": "usage_forecast_tomorrow",
+  "category": "Usage forecasting (ML)",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 9,
+    "clarity": 10
+   },
+   "overall_score": 0.95,
+   "feedback": {
+    "accuracy": "The response accurately reflects the tool evidence, including the predicted kWh usage, device breakdown, solar generation, and grid import. The cost and pricing details are consistent with the evidence provided.",
+    "relevance": "The response directly answers the question by providing the predicted electricity usage and cost for the specified date.",
+    "completeness": "The response covers all expected elements, including kWh prediction, device breakdown, solar and grid import, cost, and cost-saving strategies. However, it could include more specific dollar savings for each suggested action.",
+    "usefulness": "The response provides actionable advice tailored to the household's solar setup and time-of-use pricing, though it could benefit from more precise savings estimates for each action.",
+    "clarity": "The response is well-organized, concise, and presents the decision first, followed by supporting details and actionable steps."
+   },
+   "strengths": [
+    "Accurate and detailed prediction of electricity usage and cost.",
+    "Provides actionable strategies to reduce costs based on solar and time-of-use pricing.",
+    "Clear and well-structured response with decision-first approach."
+   ],
+   "weaknesses": [
+    "Could include more precise dollar savings for each suggested action."
+   ],
+   "suggestions": [
+    "Include specific dollar savings estimates for each recommended action to enhance usefulness.",
+    "Ensure all assumptions are clearly stated to avoid any potential misunderstandings."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 16,
+    "grounded_claims": 15,
+    "grounding_ratio": 0.94,
+    "word_count": 294
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "predict_energy_usage",
+    "search_energy_tips",
+    "get_electricity_prices"
+   ],
+   "tool_call_count": 3,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "recent_24h_summary",
+  "category": "Usage analysis & personalization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 9,
+    "clarity": 9
+   },
+   "overall_score": 0.92,
+   "feedback": {
+    "accuracy": "The response accurately reflects the tool evidence, with correct figures for consumption, cost, solar generation, and self-sufficiency. Minor rounding differences are noted but do not affect overall accuracy.",
+    "relevance": "The response directly addresses the question, providing a detailed analysis of the home's energy performance over the last 24 hours.",
+    "completeness": "The response covers all expected elements, including consumption, cost, solar generation, self-sufficiency, and improvement suggestions. However, it could specify the biggest consuming devices more clearly.",
+    "usefulness": "The response offers actionable advice tailored to the household, such as shifting loads to solar hours and using automation. It could include more specific dollar savings estimates.",
+    "clarity": "The response is well-organized and concise, with a clear decision-first structure. Some sections could be more succinct."
+   },
+   "strengths": [
+    "Accurate and detailed analysis of energy consumption and solar generation.",
+    "Provides actionable and personalized recommendations for improving self-sufficiency.",
+    "Well-structured response with clear sections for recommendation, reasoning, and plan."
+   ],
+   "weaknesses": [
+    "Could specify the biggest consuming devices more clearly.",
+    "Minor rounding differences in figures."
+   ],
+   "suggestions": [
+    "Include a clearer breakdown of the biggest consuming devices.",
+    "Provide more specific dollar savings estimates for the suggested improvements.",
+    "Ensure all figures are consistent with the tool evidence, avoiding rounding differences."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 12,
+    "grounded_claims": 12,
+    "grounding_ratio": 1.0,
+    "word_count": 269
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "get_recent_energy_summary",
+    "search_energy_tips",
+    "search_energy_tips",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "yesterday_summary",
+  "category": "Usage analysis & personalization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 9,
+    "clarity": 9
+   },
+   "overall_score": 0.95,
+   "feedback": {
+    "accuracy": "The response accurately reflects the tool evidence, providing correct figures for consumption, solar production, and cost.",
+    "relevance": "The response directly answers the question by providing the requested data on consumption, solar production, and cost.",
+    "completeness": "The response covers all expected elements, including consumption, solar production, cost, main consuming devices, and an improvement suggestion. However, it could include more specific improvement suggestions.",
+    "usefulness": "The response provides actionable advice on shifting loads to save costs, but could be more personalized with specific dollar savings estimates.",
+    "clarity": "The response is well-organized and concise, with a clear decision-first structure. However, it could be slightly more concise in the 'Why' section."
+   },
+   "strengths": [
+    "Accurate and detailed data presentation.",
+    "Actionable advice on load shifting and cost savings.",
+    "Clear structure with decision-first approach."
+   ],
+   "weaknesses": [
+    "Improvement suggestions could be more specific."
+   ],
+   "suggestions": [
+    "Include specific dollar savings estimates for suggested actions.",
+    "Provide more personalized improvement suggestions based on household habits.",
+    "Condense the 'Why' section for improved clarity."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 20,
+    "grounded_claims": 20,
+    "grounding_ratio": 1.0,
+    "word_count": 297
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "query_energy_usage",
+    "query_solar_generation",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 3,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "solar_week_history",
+  "category": "Solar power maximization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 9
+   },
+   "overall_score": 0.945,
+   "feedback": {
+    "accuracy": "The response accurately reflects the tool evidence, with minor rounding differences in total generation and worst day output.",
+    "relevance": "The response directly answers the question about solar panel production and identifies the best and worst days.",
+    "completeness": "The response covers total and average generation, best and worst days, and suggests using more solar on good days. It could include more specific weather details for each day.",
+    "usefulness": "The response provides actionable advice on scheduling loads to maximize solar usage, which is personalized and practical.",
+    "clarity": "The response is well-organized and concise, with a clear decision-first structure. It could be slightly more concise in the explanation section."
+   },
+   "strengths": [
+    "Accurate reflection of tool evidence with minor rounding differences.",
+    "Provides actionable and personalized advice for maximizing solar usage.",
+    "Well-organized and directly answers the question."
+   ],
+   "weaknesses": [
+    "Minor rounding differences in total generation and worst day output.",
+    "Could include more specific weather details for each day."
+   ],
+   "suggestions": [
+    "Ensure numerical precision matches tool evidence exactly.",
+    "Include specific weather details for each day to enhance completeness."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 7,
+    "grounded_claims": 6,
+    "grounding_ratio": 0.86,
+    "word_count": 214
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "query_solar_generation",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 2,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "seasonal_winter",
+  "category": "Seasonal & knowledge-based advice",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 9,
+    "clarity": 10
+   },
+   "overall_score": 0.95,
+   "feedback": {
+    "accuracy": "The response accurately reflects the tool evidence, including specific temperature setpoints and the impact of reduced solar production.",
+    "relevance": "The response directly addresses the question about winter energy routines with specific, relevant advice.",
+    "completeness": "The response covers all expected elements, though it could mention sealing drafts explicitly.",
+    "usefulness": "The advice is actionable and personalized, with specific times and modes for energy use, though it could include more on draft sealing.",
+    "clarity": "The response is well-organized, concise, and presents the decision first, followed by supporting details."
+   },
+   "strengths": [
+    "Accurate and specific temperature setpoints for heating.",
+    "Clear and actionable advice on using off-peak hours for energy-intensive tasks.",
+    "Inclusion of passive solar gain and fan direction for improved efficiency."
+   ],
+   "weaknesses": [
+    "Does not explicitly mention sealing drafts, which is part of the expected response criteria."
+   ],
+   "suggestions": [
+    "Include advice on sealing drafts to improve completeness.",
+    "Provide more detail on how to identify and seal drafts for added usefulness."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": false,
+    "has_energy_figures": false,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 5,
+    "grounded_claims": 5,
+    "grounding_ratio": 1.0,
+    "word_count": 282
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [
+    "search_energy_tips",
+    "get_user_preferences"
+   ],
+   "tool_call_count": 2,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "All expected tools were used.",
+    "Tool selection was appropriate, complete and efficient."
+   ]
+  }
+ },
+ {
+  "test_id": "personalization_departure",
+  "category": "Usage analysis & personalization",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 9,
+    "relevance": 10,
+    "completeness": 9,
+    "usefulness": 10,
+    "clarity": 10
+   },
+   "overall_score": 0.945,
+   "feedback": {
+    "accuracy": "The response accurately uses the tool evidence to recommend charging during off-peak hours, with correct rates and costs. However, it assumes a daily 35-mile requirement without explicit evidence.",
+    "relevance": "The response directly answers the question by recommending a specific charging window that aligns with the user's schedule.",
+    "completeness": "The response covers all expected elements, including the charging window, cost, and savings. However, it does not explicitly mention saving the 06:30 departure time as a preference.",
+    "usefulness": "The response provides actionable advice with specific times, costs, and savings, making it highly useful for the user.",
+    "clarity": "The response is well-organized, concise, and presents the decision first, followed by supporting details."
+   },
+   "strengths": [
+    "Provides a clear and actionable charging schedule.",
+    "Includes cost comparison and potential savings.",
+    "Offers additional tips for optimizing charging."
+   ],
+   "weaknesses": [
+    "Assumes a daily 35-mile requirement without explicit evidence."
+   ],
+   "suggestions": [
+    "Explicitly mention saving the 06:30 departure time as a preference.",
+    "Verify the daily mileage assumption with the user."
+   ],
+   "objective_checks": {
+    "has_specific_times": true,
+    "has_dollar_figures": true,
+    "has_energy_figures": true,
+    "cites_knowledge_base": true,
+    "actionable_language": true,
+    "quantitative_claims": 9,
+    "grounded_claims": 9,
+    "grounding_ratio": 1.0,
+    "word_count": 249
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 0.5,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 0.825,
+   "tools_used": [
+    "get_electricity_prices",
+    "get_weather_forecast",
+    "optimize_device_schedule",
+    "search_energy_tips"
+   ],
+   "tool_call_count": 4,
+   "missing_tools": [
+    "update_user_preference"
+   ],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "Missing expected tool(s): update_user_preference."
+   ]
+  }
+ },
+ {
+  "test_id": "out_of_scope",
+  "category": "Out of scope / guardrails",
+  "response_evaluation": {
+   "scores": {
+    "accuracy": 10,
+    "relevance": 10,
+    "completeness": 10,
+    "usefulness": 9,
+    "clarity": 10
+   },
+   "overall_score": 0.975,
+   "feedback": {
+    "accuracy": "The advisor accurately declines to answer the out-of-scope question and does not fabricate any information.",
+    "relevance": "The response directly addresses the question by explaining the advisor's focus and suggesting alternative resources for dining recommendations.",
+    "completeness": "The response meets all elements of the expected criteria by politely declining and offering energy-related help.",
+    "usefulness": "While the response is not directly useful for finding a pizza place, it provides actionable advice on where to find such information and offers further assistance on energy-related queries.",
+    "clarity": "The response is clear, concise, and well-structured, with the decision presented first."
+   },
+   "strengths": [
+    "Politely declines the out-of-scope question.",
+    "Suggests alternative resources for finding a pizza place.",
+    "Offers further assistance on energy-related topics."
+   ],
+   "weaknesses": [],
+   "suggestions": [],
+   "objective_checks": {
+    "has_specific_times": false,
+    "has_dollar_figures": false,
+    "has_energy_figures": false,
+    "cites_knowledge_base": false,
+    "actionable_language": false,
+    "quantitative_claims": 0,
+    "grounded_claims": 0,
+    "grounding_ratio": null,
+    "word_count": 68
+   },
+   "method": "llm-judge (gpt-4o) + objective checks"
+  },
+  "tool_evaluation": {
+   "tool_appropriateness": 1.0,
+   "tool_completeness": 1.0,
+   "tool_success_rate": 1.0,
+   "efficiency": 1.0,
+   "argument_quality": 1.0,
+   "overall_tool_score": 1.0,
+   "tools_used": [],
+   "tool_call_count": 0,
+   "missing_tools": [],
+   "unnecessary_tools": [],
+   "duplicate_calls": [],
+   "feedback": [
+    "Out-of-scope question: correctly used no tools."
+   ]
+  }
+ }
+]
